@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.lollipop.makeupapp.ui.activity.RegisterActivity">
+
+    <android.support.v7.widget.LinearLayoutCompat
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <android.support.v7.widget.AppCompatImageView
+            app:srcCompat="@drawable/ic_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/register_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/back"
+            android:textSize="20sp"/>
+    </android.support.v7.widget.LinearLayoutCompat>
+
+    <android.support.v7.widget.LinearLayoutCompat
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/register_email"
+            android:hint="@string/email"
+            android:theme="@style/EditTextTheme"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/register_username"
+            android:hint="@string/username"
+            android:layout_marginTop="20dp"
+            android:theme="@style/EditTextTheme"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/register_pass"
+            android:hint="@string/password"
+            android:layout_marginTop="20dp"
+            android:theme="@style/EditTextTheme"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/register_repeat"
+            android:hint="@string/repeat"
+            android:layout_marginTop="20dp"
+            android:theme="@style/EditTextTheme"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/register"
+            android:text="@string/register"
+            android:theme="@style/LoginButton"
+            android:textColor="@color/white"
+            android:layout_marginTop="40dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </android.support.v7.widget.LinearLayoutCompat>
+
+</android.support.v7.widget.LinearLayoutCompat>

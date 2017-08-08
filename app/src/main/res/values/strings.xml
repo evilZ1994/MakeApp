@@ -4,6 +4,19 @@
     <string name="register">注册</string>
     <string name="username">用户名</string>
     <string name="password">密码</string>
+    <string name="repeat">确认密码</string>
     <string name="login">登陆</string>
+    <string name="email">邮箱</string>
     <string name="forget_pass">忘记密码？</string>
+    <string name="back">返回</string>
+    <string name="find_email">注册邮箱</string>
+    <string name="submit">提交</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_community_fragment">Hello community fragment</string>
+    <string name="hello_schedule_fragment">Hello schedule fragment</string>
+    <string name="hello_mine_fragment">Hello mine fragment</string>
+    <string name="community">社区</string>
+    <string name="schedule_table">计划表</string>
+    <string name="me">我</string>
 </resources>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.lollipop.makeupapp.ui.activity.FindPassActivity">
+
+    <android.support.v7.widget.AppCompatEditText
+        android:id="@+id/find_username"
+        android:hint="@string/username"
+        android:theme="@style/EditTextTheme"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <android.support.v7.widget.AppCompatEditText
+        android:id="@+id/find_email"
+        android:hint="@string/find_email"
+        android:theme="@style/EditTextTheme"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/find_submit"
+        android:text="@string/submit"
+        android:textColor="@color/white"
+        android:theme="@style/LoginButton"
+        android:layout_marginTop="40dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</android.support.v7.widget.LinearLayoutCompat>
