@@ -25,6 +25,10 @@
         <item name="buttonStyle">@style/Widget.AppCompat.Button</item>
         <item name="colorButtonNormal">@color/loginBtn</item>
     </style>
+    <style name="LogoutButton" parent="AppTheme">
+        <item name="buttonStyle">@style/Widget.AppCompat.Button</item>
+        <item name="colorButtonNormal">@color/white</item>
+    </style>
 
     <style name="EditTextTheme" parent="Theme.AppCompat.Light">
         <item name="colorControlNormal">@color/gray_ccc</item>

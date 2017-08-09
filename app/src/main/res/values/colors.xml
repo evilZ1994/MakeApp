@@ -6,8 +6,12 @@
     <color name="default_background">#FAFAFA</color>
     <color name="loginBtn1">#EB9E9E</color>
     <color name="loginBtn">#FF6666</color>
+    <color name="red">#D00000</color>
     <color name="white">#FFFFFF</color>
     <color name="gray_ccc">#CCCCCC</color>
     <color name="gray_333">#333333</color>
     <color name="gray_35">#353535</color>
+    <color name="gray_f2">#F2F2F2</color>
+    <color name="dark">#000000</color>
+    <color name="orange">#FF6600</color>
 </resources>
