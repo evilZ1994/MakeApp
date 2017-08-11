@@ -47,108 +47,35 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <RelativeLayout
-                android:id="@+id/account_manage"
-                android:background="@color/white"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="1dp"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <RelativeLayout android:id="@+id/account_manage" style="@style/wrap_layout">
                 <android.support.v7.widget.AppCompatTextView
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
                     android:text="@string/account_manage"
-                    android:textSize="18sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <android.support.v7.widget.AppCompatImageView
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    app:srcCompat="@drawable/ic_next"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    style="@style/text_style" />
+                <android.support.v7.widget.AppCompatImageView style="@style/img_style"/>
             </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/personal_info"
-                android:background="@color/white"
-                android:layout_marginBottom="1dp"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <RelativeLayout android:id="@+id/personal_info" style="@style/bottom_layout">
                 <android.support.v7.widget.AppCompatTextView
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
                     android:text="@string/personal_info"
-                    android:textSize="18sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <android.support.v7.widget.AppCompatImageView
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    app:srcCompat="@drawable/ic_next"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    style="@style/text_style" />
+                <android.support.v7.widget.AppCompatImageView style="@style/img_style"/>
             </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/dress_up"
-                android:background="@color/white"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="1dp"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                style="@style/wrap_layout">
                 <android.support.v7.widget.AppCompatTextView
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
                     android:text="@string/dress_up"
-                    android:textSize="18sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <android.support.v7.widget.AppCompatImageView
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    app:srcCompat="@drawable/ic_next"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    style="@style/text_style" />
+                <android.support.v7.widget.AppCompatImageView style="@style/img_style"/>
             </RelativeLayout>
 
-            <RelativeLayout
-                android:id="@+id/clean_cache"
-                android:background="@color/white"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="1dp"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <RelativeLayout android:id="@+id/clean_cache" style="@style/wrap_layout">
                 <android.support.v7.widget.AppCompatTextView
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
                     android:text="@string/clean_cache"
-                    android:textSize="18sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    style="@style/text_style" />
                 <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/img"
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentEnd="true"
-                    app:srcCompat="@drawable/ic_next"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    style="@style/img_style" />
                 <TextView
                     android:id="@+id/cache"
                     android:text="@string/cache_test"
@@ -157,53 +84,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </RelativeLayout>
-            <RelativeLayout
-                android:id="@+id/advice"
-                android:background="@color/white"
-                android:layout_marginBottom="1dp"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <RelativeLayout android:id="@+id/advice" style="@style/mid_layout">
                 <android.support.v7.widget.AppCompatTextView
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
                     android:text="@string/advice"
-                    android:textSize="18sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <android.support.v7.widget.AppCompatImageView
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    app:srcCompat="@drawable/ic_next"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    style="@style/text_style" />
+                <android.support.v7.widget.AppCompatImageView style="@style/img_style"/>
             </RelativeLayout>
-            <RelativeLayout
-                android:id="@+id/about_us"
-                android:background="@color/white"
-                android:layout_marginBottom="1dp"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <RelativeLayout android:id="@+id/about_us" style="@style/bottom_layout">
                 <android.support.v7.widget.AppCompatTextView
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:text="@string/about_us"
-                    android:textSize="18sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <android.support.v7.widget.AppCompatImageView
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    app:srcCompat="@drawable/ic_next"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:text="@string/account_manage"
+                    style="@style/text_style" />
+                <android.support.v7.widget.AppCompatImageView style="@style/img_style"/>
             </RelativeLayout>
 
             <android.support.v7.widget.AppCompatButton

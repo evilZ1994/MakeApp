@@ -36,4 +36,46 @@
         <item name="android:textColorHint">@color/gray_ccc</item>
     </style>
 
+    <style name="base_layout">
+        <item name="android:clickable">true</item>
+        <item name="android:background">@drawable/item_click_selector</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+    </style>
+    <style name="wrap_layout" parent="base_layout">
+        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:layout_marginBottom">0.5dp</item>
+    </style>
+    <style name="mid_layout" parent="base_layout">
+        <item name="android:layout_marginBottom">0.5dp</item>
+    </style>
+    <style name="bottom_layout" parent="base_layout">
+    </style>
+    <style name="text_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:layout_alignParentStart">true</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+    <style name="img_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_alignParentEnd">true</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:src">@drawable/ic_next</item>
+    </style>
+
+    <style name="wrap_layout.info">
+        <item name="android:paddingTop">20dp</item>
+        <item name="android:paddingBottom">20dp</item>
+    </style>
+    <style name="text_style.left" >
+        <item name="android:layout_alignParentStart">false</item>
+        <item name="android:layout_marginEnd">5dp</item>
+    </style>
 </resources>

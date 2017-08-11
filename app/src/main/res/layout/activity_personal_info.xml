@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:background="@color/gray_f2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.lollipop.makeupapp.ui.activity.PersonalInfoActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <android.support.v7.widget.LinearLayoutCompat
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <android.support.v7.widget.AppCompatImageView
+                    app:srcCompat="@drawable/ic_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <android.support.v7.widget.AppCompatTextView
+                    android:text="@string/back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </android.support.v7.widget.LinearLayoutCompat>
+            <android.support.v7.widget.AppCompatTextView
+                android:gravity="center"
+                android:text="@string/personal_info"
+                android:textSize="20sp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </FrameLayout>
+    </android.support.v7.widget.Toolbar>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <android.support.v7.widget.LinearLayoutCompat
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <RelativeLayout style="@style/wrap_layout" android:clickable="false">
+                <android.support.v7.widget.AppCompatTextView
+                    android:text="@string/head_img"
+                    style="@style/text_style" />
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/img1"
+                    style="@style/img_style" />
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/head_img"
+                    android:clickable="true"
+                    app:srcCompat="@drawable/headimg"
+                    android:layout_toStartOf="@id/img1"
+                    android:layout_marginEnd="5dp"
+                    android:layout_width="55dp"
+                    android:layout_height="55dp" />
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/nickname" style="@style/mid_layout">
+                <android.support.v7.widget.AppCompatTextView
+                    android:text="@string/nickname" style="@style/text_style"/>
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/img2" style="@style/img_style" />
+                <android.support.v7.widget.AppCompatTextView
+                    android:text="@string/nickname_test"
+                    android:layout_toStartOf="@id/img2"
+                    style="@style/text_style.left"/>
+            </RelativeLayout>
+            <RelativeLayout style="@style/mid_layout" android:clickable="false">
+                <android.support.v7.widget.AppCompatTextView
+                    android:text="@string/account_id" style="@style/text_style"/>
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/img3" style="@style/img_style" android:visibility="invisible"/>
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/account_id"
+                    android:text="@string/account_id_hint"
+                    android:layout_toStartOf="@id/img3"
+                    style="@style/text_style.left"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/sex" style="@style/mid_layout">
+                <android.support.v7.widget.AppCompatTextView
+                    android:text="@string/sex" style="@style/text_style"/>
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/img4" style="@style/img_style" />
+                <android.support.v7.widget.AppCompatTextView
+                    android:text="@string/female"
+                    android:layout_toStartOf="@id/img4"
+                    style="@style/text_style.left"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/location" style="@style/mid_layout">
+                <android.support.v7.widget.AppCompatTextView
+                    android:text="@string/location" style="@style/text_style"/>
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/img5" style="@style/img_style" />
+                <android.support.v7.widget.AppCompatTextView
+                    android:text="@string/location_test"
+                    android:layout_toStartOf="@id/img5"
+                    style="@style/text_style.left"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/signature" style="@style/mid_layout">
+                <android.support.v7.widget.AppCompatTextView
+                    android:text="@string/signature2" style="@style/text_style"/>
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/img6" style="@style/img_style" />
+                <android.support.v7.widget.AppCompatTextView
+                    android:text="@string/hello"
+                    android:layout_toStartOf="@id/img6"
+                    style="@style/text_style.left"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/active_level" style="@style/wrap_layout" android:clickable="false">
+                <android.support.v7.widget.AppCompatTextView
+                    android:text="@string/active_level" style="@style/text_style"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/register_time" style="@style/bottom_layout" android:clickable="false">
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/time" android:text="@string/register_time" style="@style/text_style"/>
+                <android.support.v7.widget.AppCompatTextView
+                    android:text="@string/time_test"
+                    android:layout_toEndOf="@id/time"
+                    android:layout_marginStart="20dp"
+                    style="@style/text_style.left"/>
+            </RelativeLayout>
+        </android.support.v7.widget.LinearLayoutCompat>
+    </android.support.v4.widget.NestedScrollView>
+</android.support.v7.widget.LinearLayoutCompat>

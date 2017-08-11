@@ -133,4 +133,15 @@
     <string name="advice">意见反馈</string>
     <string name="about_us">关于我们</string>
     <string name="exit_current_account">退出当前账号</string>
+    <string name="head_img">头像</string>
+    <string name="nickname">昵称</string>
+    <string name="account_id">账号ID</string>
+    <string name="account_id_hint">注册后账号有固定ID</string>
+    <string name="sex">性别</string>
+    <string name="female">女</string>
+    <string name="location">地区</string>
+    <string name="signature2">个性签名</string>
+    <string name="active_level">活跃等级</string>
+    <string name="register_time">注册时间</string>
+    <string name="time_test">2017-6-10</string>
 </resources>
