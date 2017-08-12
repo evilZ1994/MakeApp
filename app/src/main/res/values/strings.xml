@@ -144,4 +144,5 @@
     <string name="active_level">活跃等级</string>
     <string name="register_time">注册时间</string>
     <string name="time_test">2017-6-10</string>
+    <string name="password_limit">0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM</string>
 </resources>
