@@ -1,4 +1,4 @@
-package com.example.lollipop.makeupapp.data.bmob;
+package com.example.lollipop.makeupapp.bean.bmob;
 
 import cn.bmob.v3.BmobObject;
 

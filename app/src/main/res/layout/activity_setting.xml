@@ -98,6 +98,7 @@
             </RelativeLayout>
 
             <android.support.v7.widget.AppCompatButton
+                android:id="@+id/logout"
                 android:text="@string/exit_current_account"
                 android:textColor="@color/red"
                 android:layout_marginTop="40dp"

@@ -1,26 +1,24 @@
 package com.example.lollipop.makeupapp.ui.activity;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.support.design.widget.TextInputEditText;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatButton;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.MotionEvent;
-import android.view.View;
+import android.widget.Toast;
 
 import com.example.lollipop.makeupapp.R;
+import com.example.lollipop.makeupapp.bean.bmob.User;
 import com.example.lollipop.makeupapp.ui.listener.InputClearListener;
-import com.example.lollipop.makeupapp.ui.listener.InputClearOnFocusChangeListener;
-import com.example.lollipop.makeupapp.ui.listener.InputClearOnTextChangedListener;
-import com.example.lollipop.makeupapp.ui.listener.InputClearOnTouchListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
-import static android.R.attr.editable;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.LogInListener;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -28,6 +26,8 @@ public class LoginActivity extends AppCompatActivity {
     TextInputEditText usernameInput;
     @BindView(R.id.login_pass)
     TextInputEditText passInput;
+    @BindView(R.id.login)
+    AppCompatButton loginBtn;
 
     @OnClick(R.id.login_register)
     void register(){
@@ -39,7 +39,20 @@ public class LoginActivity extends AppCompatActivity {
     }
     @OnClick(R.id.login)
     void login(){
-        startActivity(new Intent(this, MainActivity.class));
+        String username = usernameInput.getText().toString();
+        String password = passInput.getText().toString();
+        User.loginByAccount(username, password, new LogInListener<User>() {
+            @Override
+            public void done(User user, BmobException e) {
+                if (user != null){
+                    Toast.makeText(LoginActivity.this, "登陆成功", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    finish();
+                }else {
+                    Toast.makeText(LoginActivity.this, "用户名或密码错误", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     @Override
@@ -53,18 +66,32 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        /*//当输入框有字符输入时，显示清除图标，没有字符时隐藏清除图标
-        usernameInput.addTextChangedListener(new InputClearOnTextChangedListener(this, usernameInput));
-        //根据点击位置设置清除图标的功能（drawableRight没有点击事件）
-        usernameInput.setOnTouchListener(new InputClearOnTouchListener(usernameInput));
-        //失去焦点时隐藏图标，取得焦点且输入框中有字符时，显示图标
-        usernameInput.setOnFocusChangeListener(new InputClearOnFocusChangeListener(this, usernameInput));
-        passInput.addTextChangedListener(new InputClearOnTextChangedListener(this, passInput));
-        passInput.setOnTouchListener(new InputClearOnTouchListener(passInput));
-        passInput.setOnFocusChangeListener(new InputClearOnFocusChangeListener(this, passInput));*/
         InputClearListener.addListener(this, usernameInput);
         InputClearListener.addListener(this, passInput);
+        usernameInput.addTextChangedListener(new PwdWatcher());
+        passInput.addTextChangedListener(new PwdWatcher());
     }
 
+    private class PwdWatcher implements TextWatcher{
 
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            if (passInput.length() > 0 && usernameInput.length() > 0){
+                loginBtn.setEnabled(true);
+            }else {
+                loginBtn.setEnabled(false);
+                //loginBtn.setBackgroundColor(ContextCompat.getColor(LoginActivity.this, R.color.loginBtn1));
+            }
+        }
+    }
 }

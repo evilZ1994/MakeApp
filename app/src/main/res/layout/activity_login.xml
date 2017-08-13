@@ -70,8 +70,9 @@
         <android.support.v7.widget.AppCompatButton
             android:text="@string/login"
             android:textColor="@color/white"
-            android:background="@color/loginBtn1"
+            android:background="@drawable/login_button_selector"
             android:layout_marginTop="40dp"
+            android:enabled="false"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/login" />
