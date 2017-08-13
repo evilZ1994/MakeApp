@@ -11,10 +11,8 @@ import javax.inject.Singleton;
  */
 @Singleton
 public class DataManager {
-    private ApiService apiService;
 
     @Inject
-    public DataManager(ApiService apiService){
-        this.apiService = apiService;
+    public DataManager(){
     }
 }
