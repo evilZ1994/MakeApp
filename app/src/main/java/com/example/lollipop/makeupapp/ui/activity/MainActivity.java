@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.example.lollipop.makeupapp.R;
 import com.example.lollipop.makeupapp.ui.adapter.MyFragmentPagerAdapter;
+import com.example.lollipop.makeupapp.ui.base.BaseActivity;
 import com.example.lollipop.makeupapp.ui.fragment.CommunityFragment;
 import com.example.lollipop.makeupapp.ui.fragment.HomeFragment;
 import com.example.lollipop.makeupapp.ui.fragment.ScheduleFragment;
@@ -23,7 +24,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
     private List<Fragment> fragmentList = new ArrayList<>();
     private FragmentPagerAdapter fragmentPagerAdapter;
     private MenuItem menuItem;

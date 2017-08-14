@@ -4,8 +4,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.example.lollipop.makeupapp.R;
+import com.example.lollipop.makeupapp.ui.base.BaseActivity;
 
-public class PersonalInfoActivity extends AppCompatActivity {
+public class PersonalInfoActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

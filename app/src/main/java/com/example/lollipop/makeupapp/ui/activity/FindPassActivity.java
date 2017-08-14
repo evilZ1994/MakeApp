@@ -5,12 +5,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.example.lollipop.makeupapp.R;
+import com.example.lollipop.makeupapp.ui.base.BaseActivity;
 import com.example.lollipop.makeupapp.ui.listener.InputClearListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class FindPassActivity extends AppCompatActivity {
+public class FindPassActivity extends BaseActivity {
 
     @BindView(R.id.find_username)
     TextInputEditText usernameInput;

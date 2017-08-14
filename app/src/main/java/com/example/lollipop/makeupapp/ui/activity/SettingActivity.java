@@ -5,12 +5,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.example.lollipop.makeupapp.R;
+import com.example.lollipop.makeupapp.app.AppManager;
 import com.example.lollipop.makeupapp.bean.bmob.User;
+import com.example.lollipop.makeupapp.ui.base.BaseActivity;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SettingActivity extends AppCompatActivity {
+public class SettingActivity extends BaseActivity {
 
     @OnClick(R.id.personal_info)
     void personalInfo(){
@@ -20,8 +22,8 @@ public class SettingActivity extends AppCompatActivity {
     @OnClick(R.id.logout)
     void logout(){
         User.logOut();
+        AppManager.getInstance().finishAllActivity();
         startActivity(new Intent(this, LoginActivity.class));
-        finish();
     }
 
     @Override

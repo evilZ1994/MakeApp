@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.example.lollipop.makeupapp.R;
 import com.example.lollipop.makeupapp.bean.bmob.User;
+import com.example.lollipop.makeupapp.ui.base.BaseActivity;
 import com.example.lollipop.makeupapp.ui.listener.InputClearListener;
 
 import butterknife.BindView;
@@ -20,7 +21,7 @@ import butterknife.OnClick;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.LogInListener;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
 
     @BindView(R.id.login_username)
     TextInputEditText usernameInput;
@@ -90,7 +91,6 @@ public class LoginActivity extends AppCompatActivity {
                 loginBtn.setEnabled(true);
             }else {
                 loginBtn.setEnabled(false);
-                //loginBtn.setBackgroundColor(ContextCompat.getColor(LoginActivity.this, R.color.loginBtn1));
             }
         }
     }
