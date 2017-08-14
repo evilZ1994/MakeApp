@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:background="@drawable/dialog_background_gray"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/title"
+        android:text="性别修改"
+        android:textSize="20sp"
+        android:textColor="@color/dark"
+        android:gravity="center"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/male"
+        android:text="@string/male"
+        android:textSize="20sp"
+        android:textColor="@color/gray_666"
+        android:background="@drawable/item_click_selector"
+        android:enabled="true"
+        android:clickable="true"
+        android:gravity="center"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/female"
+        android:text="@string/female"
+        android:textSize="20sp"
+        android:textColor="@color/gray_666"
+        android:background="@drawable/item_click_selector"
+        android:enabled="true"
+        android:clickable="true"
+        android:gravity="center"
+        android:layout_marginTop="1dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <android.support.v7.widget.AppCompatButton
+        android:layout_gravity="center_horizontal"
+        android:text="@string/cancel"
+        android:theme="@style/LogoutButton"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</android.support.v7.widget.LinearLayoutCompat>

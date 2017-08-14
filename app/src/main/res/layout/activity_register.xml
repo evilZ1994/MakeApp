@@ -8,10 +8,12 @@
     tools:context="com.example.lollipop.makeupapp.ui.activity.RegisterActivity">
 
     <android.support.v7.widget.LinearLayoutCompat
+        android:id="@+id/register_back"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
         android:orientation="horizontal"
         android:gravity="center"
+        android:clickable="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         <android.support.v7.widget.AppCompatImageView
@@ -19,7 +21,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/register_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/back"
@@ -81,12 +82,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </android.support.design.widget.TextInputLayout>
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/repeat_hint"
+            android:gravity="end"
+            android:text="@string/repeat_hint"
+            android:textSize="8sp"
+            android:textColor="@color/loginBtn"
+            android:visibility="invisible"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
         
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/register"
             android:text="@string/register"
-            android:theme="@style/LoginButton"
+            android:background="@drawable/login_button_selector"
             android:textColor="@color/white"
+            android:enabled="false"
             android:layout_marginTop="40dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

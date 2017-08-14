@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.lollipop.makeupapp.R;
+import com.example.lollipop.makeupapp.app.AppManager;
 import com.example.lollipop.makeupapp.ui.adapter.MyFragmentPagerAdapter;
 import com.example.lollipop.makeupapp.ui.base.BaseActivity;
 import com.example.lollipop.makeupapp.ui.fragment.CommunityFragment;
@@ -109,8 +110,7 @@ public class MainActivity extends BaseActivity {
             mPressedTime = mNowTime;
         } else {
             //做一些退出操作
-            this.finish();
-            System.exit(0);
+            AppManager.getInstance().AppExit(this);
         }
     }
 }

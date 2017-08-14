@@ -36,6 +36,11 @@
         <item name="android:textColorHint">@color/gray_ccc</item>
     </style>
 
+    <style name="InfoChangeDialogTheme" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowFullscreen">true</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
     <style name="base_layout">
         <item name="android:clickable">true</item>
         <item name="android:background">@drawable/item_click_selector</item>

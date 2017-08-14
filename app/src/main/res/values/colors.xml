@@ -10,8 +10,10 @@
     <color name="white">#FFFFFF</color>
     <color name="gray_ccc">#CCCCCC</color>
     <color name="gray_333">#333333</color>
+    <color name="gray_666">#666666</color>
     <color name="gray_35">#353535</color>
     <color name="gray_f2">#F2F2F2</color>
+    <color name="gray_f8">#F8F8F8</color>
     <color name="dark">#000000</color>
     <color name="orange">#FF6600</color>
     <color name="ripple">#818181</color>

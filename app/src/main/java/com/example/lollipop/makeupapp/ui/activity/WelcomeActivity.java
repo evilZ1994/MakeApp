@@ -15,22 +15,18 @@ public class WelcomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_welcome);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //判断用户是否已经登陆
-                BmobUser user = User.getCurrentUser();
-                if (user != null){
-                    //用户已经登陆，直接进入主界面
-                    startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
-                    finish();
-                }else {
-                    //用户未登陆或者登陆过期，进入登陆界面
-                    Intent intent = new Intent(WelcomeActivity.this, LoginActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
-            }
-        }, 500);
+
+        //判断用户是否已经登陆
+        BmobUser user = User.getCurrentUser();
+        if (user != null){
+            //用户已经登陆，直接进入主界面
+            startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
+            finish();
+        }else {
+            //用户未登陆或者登陆过期，进入登陆界面
+            Intent intent = new Intent(WelcomeActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 }

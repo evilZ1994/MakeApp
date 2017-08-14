@@ -11,6 +11,7 @@ import android.text.TextWatcher;
 import android.widget.Toast;
 
 import com.example.lollipop.makeupapp.R;
+import com.example.lollipop.makeupapp.app.AppManager;
 import com.example.lollipop.makeupapp.bean.bmob.User;
 import com.example.lollipop.makeupapp.ui.base.BaseActivity;
 import com.example.lollipop.makeupapp.ui.listener.InputClearListener;
@@ -30,6 +31,10 @@ public class LoginActivity extends BaseActivity {
     @BindView(R.id.login)
     AppCompatButton loginBtn;
 
+    @OnClick(R.id.login_close)
+    void close(){
+        AppManager.getInstance().AppExit(this);
+    }
     @OnClick(R.id.login_register)
     void register(){
         startActivity(new Intent(this, RegisterActivity.class));
@@ -40,8 +45,8 @@ public class LoginActivity extends BaseActivity {
     }
     @OnClick(R.id.login)
     void login(){
-        String username = usernameInput.getText().toString();
-        String password = passInput.getText().toString();
+        String username = usernameInput.getText().toString().replaceAll(" ", "");//去掉空格
+        String password = passInput.getText().toString().replaceAll(" ", "");
         User.loginByAccount(username, password, new LogInListener<User>() {
             @Override
             public void done(User user, BmobException e) {

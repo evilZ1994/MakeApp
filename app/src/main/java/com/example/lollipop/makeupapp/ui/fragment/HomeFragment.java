@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -18,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.lollipop.makeupapp.R;
+import com.example.lollipop.makeupapp.bean.bmob.User;
 import com.example.lollipop.makeupapp.ui.activity.SettingActivity;
 import com.example.lollipop.makeupapp.ui.adapter.MyFragmentStatePagerAdapter;
 import com.example.lollipop.makeupapp.util.StatusBarUtils;
@@ -29,6 +31,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.bmob.v3.BmobUser;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,6 +40,7 @@ public class HomeFragment extends Fragment {
     private TextView titleView;
     private MenuItem menuItem;
 
+    private User currentUser;
     private List<Fragment> fragments;
 
     private static final String[] TITLES = new String[]{"分享", "收藏", "消息"};
@@ -51,6 +55,12 @@ public class HomeFragment extends Fragment {
     TabLayout tabLayout;
     @BindView(R.id.view_pager)
     ViewPager viewPager;
+    @BindView(R.id.nickname)
+    AppCompatTextView nickNameText;
+    @BindView(R.id.location)
+    AppCompatTextView locationText;
+    @BindView(R.id.signature)
+    AppCompatTextView signatureText;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -69,6 +79,8 @@ public class HomeFragment extends Fragment {
     }
 
     private void initView(View view) {
+        currentUser = User.getCurrentUser(User.class);
+
         titleView = (TextView) view.findViewById(R.id.title);
 
         toolbar.inflateMenu(R.menu.menu_setting);
@@ -110,6 +122,10 @@ public class HomeFragment extends Fragment {
         tabLayout.addTab(tabLayout.newTab().setText(TITLES[0]));
         tabLayout.setupWithViewPager(viewPager);
 
+        //设置个人信息面板
+        nickNameText.setText(currentUser.getUsername());
+        locationText.setText(currentUser.getLocation());
+        signatureText.setText(currentUser.getLocation());
     }
 
 }

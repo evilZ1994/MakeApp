@@ -64,12 +64,13 @@
                     android:layout_height="55dp" />
             </RelativeLayout>
             <RelativeLayout
-                android:id="@+id/nickname" style="@style/mid_layout">
+                android:id="@+id/nickname_layout" style="@style/mid_layout">
                 <android.support.v7.widget.AppCompatTextView
                     android:text="@string/nickname" style="@style/text_style"/>
                 <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/img2" style="@style/img_style" />
                 <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/nickname"
                     android:text="@string/nickname_test"
                     android:layout_toStartOf="@id/img2"
                     style="@style/text_style.left"/>
@@ -86,34 +87,37 @@
                     style="@style/text_style.left"/>
             </RelativeLayout>
             <RelativeLayout
-                android:id="@+id/sex" style="@style/mid_layout">
+                android:id="@+id/sex_layout" style="@style/mid_layout">
                 <android.support.v7.widget.AppCompatTextView
                     android:text="@string/sex" style="@style/text_style"/>
                 <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/img4" style="@style/img_style" />
                 <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/sex"
                     android:text="@string/female"
                     android:layout_toStartOf="@id/img4"
                     style="@style/text_style.left"/>
             </RelativeLayout>
             <RelativeLayout
-                android:id="@+id/location" style="@style/mid_layout">
+                android:id="@+id/location_layout" style="@style/mid_layout">
                 <android.support.v7.widget.AppCompatTextView
                     android:text="@string/location" style="@style/text_style"/>
                 <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/img5" style="@style/img_style" />
                 <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/location"
                     android:text="@string/location_test"
                     android:layout_toStartOf="@id/img5"
                     style="@style/text_style.left"/>
             </RelativeLayout>
             <RelativeLayout
-                android:id="@+id/signature" style="@style/mid_layout">
+                android:id="@+id/signature_layout" style="@style/mid_layout">
                 <android.support.v7.widget.AppCompatTextView
                     android:text="@string/signature2" style="@style/text_style"/>
                 <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/img6" style="@style/img_style" />
                 <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/signature"
                     android:text="@string/hello"
                     android:layout_toStartOf="@id/img6"
                     style="@style/text_style.left"/>

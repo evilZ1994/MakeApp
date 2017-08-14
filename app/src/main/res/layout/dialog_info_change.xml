@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:background="@drawable/dialog_background_white" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/title_text"
+        android:textSize="20sp"
+        android:textColor="@color/dark"
+        android:gravity="center"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <android.support.design.widget.TextInputLayout
+        android:theme="@style/EditTextTheme"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/input"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:hint="@string/input_nickname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </android.support.design.widget.TextInputLayout>
+    <android.support.v7.widget.LinearLayoutCompat
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/cancel"
+            android:text="@string/cancel"
+            android:textSize="20sp"
+            android:textColor="@color/gray_ccc"
+            android:gravity="center"
+            android:background="@drawable/item_click_selector"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/ok"
+            android:text="@string/ok"
+            android:textSize="20sp"
+            android:textColor="@color/gray_ccc"
+            android:gravity="center"
+            android:enabled="false"
+            android:layout_weight="1"
+            android:background="@drawable/item_click_selector"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+    </android.support.v7.widget.LinearLayoutCompat>
+</android.support.v7.widget.LinearLayoutCompat>

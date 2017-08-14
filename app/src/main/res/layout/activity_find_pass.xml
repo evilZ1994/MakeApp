@@ -25,7 +25,7 @@
         android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <android.support.v7.widget.AppCompatEditText
+        <android.support.design.widget.TextInputEditText
             android:id="@+id/find_email"
             android:hint="@string/find_email"
             android:layout_width="match_parent"
@@ -36,7 +36,8 @@
         android:id="@+id/find_submit"
         android:text="@string/submit"
         android:textColor="@color/white"
-        android:theme="@style/LoginButton"
+        android:background="@drawable/login_button_selector"
+        android:enabled="false"
         android:layout_marginTop="40dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
