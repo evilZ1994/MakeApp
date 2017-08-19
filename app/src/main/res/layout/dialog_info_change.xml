@@ -31,7 +31,7 @@
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/cancel"
             android:text="@string/cancel"
-            android:textSize="20sp"
+            android:textSize="15sp"
             android:textColor="@color/gray_ccc"
             android:gravity="center"
             android:background="@drawable/item_click_selector"
@@ -41,7 +41,7 @@
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/ok"
             android:text="@string/ok"
-            android:textSize="20sp"
+            android:textSize="15sp"
             android:textColor="@color/gray_ccc"
             android:gravity="center"
             android:enabled="false"

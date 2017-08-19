@@ -1,6 +1,7 @@
 package com.example.lollipop.makeupapp.ui.dialog;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -38,8 +39,8 @@ public class InfoChangeDialog extends BaseDialog {
     @BindView(R.id.ok)
     AppCompatTextView okText;
 
-    public InfoChangeDialog(@NonNull Context context, @StyleRes int themeResId, String title, UpdateListener listener) {
-        super(context, themeResId, title, listener);
+    public InfoChangeDialog(@NonNull Context context, @StyleRes int themeResId, String title, UpdateListener listener, ProgressDialog progressDialog) {
+        super(context, themeResId, title, listener, progressDialog);
     }
 
     @OnClick(R.id.cancel)
@@ -49,10 +50,17 @@ public class InfoChangeDialog extends BaseDialog {
     @OnClick(R.id.ok)
     void ok(){
         String username = inputEditText.getText().toString();
-        User newUser = new User();
-        newUser.setUsername(username);
-        BmobUser currentUser = User.getCurrentUser();
-        newUser.update(currentUser.getObjectId(), getListener());
+        User currentUser = User.getCurrentUser(User.class);
+        if (username.equals(currentUser.getUsername())){
+            this.dismiss();
+        }else {
+            User newUser = new User();
+            newUser.setUsername(username);
+            newUser.update(currentUser.getObjectId(), getListener());
+            this.dismiss();
+            getProgressDialog().show();
+        }
+
     }
 
     @Override

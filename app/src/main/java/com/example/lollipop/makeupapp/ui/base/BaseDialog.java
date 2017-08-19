@@ -1,6 +1,7 @@
 package com.example.lollipop.makeupapp.ui.base;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
@@ -18,11 +19,13 @@ import cn.bmob.v3.listener.UpdateListener;
 public class BaseDialog extends Dialog {
     private String title;
     private UpdateListener listener;
+    private ProgressDialog progressDialog;
 
-    public BaseDialog(@NonNull Context context, @StyleRes int themeResId, String title, UpdateListener listener) {
+    public BaseDialog(@NonNull Context context, @StyleRes int themeResId, String title, UpdateListener listener, ProgressDialog progressDialog) {
         super(context, themeResId);
         this.title = title;
         this.listener = listener;
+        this.progressDialog = progressDialog;
     }
 
     @Override
@@ -38,6 +41,10 @@ public class BaseDialog extends Dialog {
 
     public UpdateListener getListener(){
         return listener;
+    }
+
+    public ProgressDialog getProgressDialog(){
+        return progressDialog;
     }
 
     @Override

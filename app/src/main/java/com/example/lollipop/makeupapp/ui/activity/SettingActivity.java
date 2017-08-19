@@ -14,11 +14,14 @@ import butterknife.OnClick;
 
 public class SettingActivity extends BaseActivity {
 
+    @OnClick(R.id.back)
+    void back(){
+        AppManager.getInstance().finishActivity();
+    }
     @OnClick(R.id.personal_info)
     void personalInfo(){
         startActivity(new Intent(this, PersonalInfoActivity.class));
     }
-
     @OnClick(R.id.logout)
     void logout(){
         User.logOut();

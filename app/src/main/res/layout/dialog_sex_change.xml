@@ -5,7 +5,7 @@
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/title"
-        android:text="性别修改"
+        android:text="@string/sex_change"
         android:textSize="20sp"
         android:textColor="@color/dark"
         android:gravity="center"
@@ -41,6 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <android.support.v7.widget.AppCompatButton
+        android:id="@+id/cancel"
         android:layout_gravity="center_horizontal"
         android:text="@string/cancel"
         android:theme="@style/LogoutButton"

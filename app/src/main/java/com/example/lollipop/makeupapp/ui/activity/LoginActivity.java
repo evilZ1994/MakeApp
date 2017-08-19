@@ -1,5 +1,6 @@
 package com.example.lollipop.makeupapp.ui.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.content.ContextCompat;
@@ -15,6 +16,7 @@ import com.example.lollipop.makeupapp.app.AppManager;
 import com.example.lollipop.makeupapp.bean.bmob.User;
 import com.example.lollipop.makeupapp.ui.base.BaseActivity;
 import com.example.lollipop.makeupapp.ui.listener.InputClearListener;
+import com.example.lollipop.makeupapp.util.FileUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,6 +25,7 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.LogInListener;
 
 public class LoginActivity extends BaseActivity {
+    ProgressDialog progressDialog;
 
     @BindView(R.id.login_username)
     TextInputEditText usernameInput;
@@ -45,6 +48,7 @@ public class LoginActivity extends BaseActivity {
     }
     @OnClick(R.id.login)
     void login(){
+        progressDialog.show();
         String username = usernameInput.getText().toString().replaceAll(" ", "");//去掉空格
         String password = passInput.getText().toString().replaceAll(" ", "");
         User.loginByAccount(username, password, new LogInListener<User>() {
@@ -52,10 +56,18 @@ public class LoginActivity extends BaseActivity {
             public void done(User user, BmobException e) {
                 if (user != null){
                     Toast.makeText(LoginActivity.this, "登陆成功", Toast.LENGTH_SHORT).show();
+                    //检查头像
+                    FileUtil.getInstance().checkHeadIcon();
+                    if (progressDialog.isShowing()){
+                        progressDialog.dismiss();
+                    }
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                     finish();
                 }else {
                     Toast.makeText(LoginActivity.this, "用户名或密码错误", Toast.LENGTH_SHORT).show();
+                    if (progressDialog.isShowing()){
+                        progressDialog.dismiss();
+                    }
                 }
             }
         });
@@ -72,6 +84,9 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void initView() {
+        progressDialog = new ProgressDialog(this, R.style.ProgressDialogTheme);
+        progressDialog.setMessage("正在登陆...");
+
         InputClearListener.addListener(this, usernameInput);
         InputClearListener.addListener(this, passInput);
         usernameInput.addTextChangedListener(new PwdWatcher());

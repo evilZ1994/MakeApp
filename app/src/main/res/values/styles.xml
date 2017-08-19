@@ -41,6 +41,16 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="ProgressDialogTheme" parent="Base.Theme.AppCompat.Dialog">
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColor">@color/dark</item>
+    </style>
+
+    <style name="popupWindowAnim" parent="@android:style/Animation.Activity">
+        <item name="android:windowEnterAnimation">@anim/popup_enter</item>
+        <item name="android:windowExitAnimation">@anim/popup_exit</item>
+    </style>
+
     <style name="base_layout">
         <item name="android:clickable">true</item>
         <item name="android:background">@drawable/item_click_selector</item>

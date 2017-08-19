@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray_e3"
+    android:gravity="bottom"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/camera"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:background="@drawable/item_click_selector"
+        android:gravity="center"
+        android:paddingBottom="15dp"
+        android:paddingTop="15dp"
+        android:text="@string/take_photo"
+        android:textColor="@color/dark"
+        android:textSize="20sp" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/gallery"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:layout_marginTop="0.5dp"
+        android:background="@drawable/item_click_selector"
+        android:gravity="center"
+        android:paddingBottom="15dp"
+        android:paddingTop="15dp"
+        android:text="@string/from_gallery"
+        android:textColor="@color/dark"
+        android:textSize="20sp" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/cancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/item_click_selector"
+        android:gravity="center"
+        android:paddingBottom="15dp"
+        android:paddingTop="15dp"
+        android:text="@string/cancel"
+        android:textColor="@color/dark"
+        android:textSize="20sp" />
+</android.support.v7.widget.LinearLayoutCompat>

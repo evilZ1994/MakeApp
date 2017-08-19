@@ -27,7 +27,7 @@
     <string name="nickname_test">我是昵称</string>
     <string name="location_test">重庆 南岸</string>
     <string name="signature">个性签名：</string>
-    <string name="hello">hello world !</string>
+    <string name="hello">hello world !hello world !hello world !hello world !hello world !hello world !</string>
     <string name="share">分享</string>
     <string name="thumbs">被赞</string>
     <string name="commented">被评论</string>
@@ -61,4 +61,7 @@
     <string name="ok">确定</string>
     <string name="input_nickname">请输入昵称</string>
     <string name="male">男</string>
+    <string name="sex_change">性别修改</string>
+    <string name="take_photo">拍照</string>
+    <string name="from_gallery">从相册选择图片</string>
 </resources>

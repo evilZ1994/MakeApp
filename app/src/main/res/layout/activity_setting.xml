@@ -11,12 +11,15 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:background="@color/white"
+        android:elevation="2dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <android.support.v7.widget.LinearLayoutCompat
+                android:id="@+id/back"
+                android:clickable="true"
                 android:layout_gravity="center_vertical"
                 android:orientation="horizontal"
                 android:gravity="center"
@@ -92,7 +95,7 @@
             </RelativeLayout>
             <RelativeLayout android:id="@+id/about_us" style="@style/bottom_layout">
                 <android.support.v7.widget.AppCompatTextView
-                    android:text="@string/account_manage"
+                    android:text="@string/about_us"
                     style="@style/text_style" />
                 <android.support.v7.widget.AppCompatImageView style="@style/img_style"/>
             </RelativeLayout>

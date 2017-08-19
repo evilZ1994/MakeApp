@@ -2,6 +2,8 @@ package com.example.lollipop.makeupapp.ui.fragment;
 
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -12,6 +14,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,8 +25,11 @@ import com.example.lollipop.makeupapp.R;
 import com.example.lollipop.makeupapp.bean.bmob.User;
 import com.example.lollipop.makeupapp.ui.activity.SettingActivity;
 import com.example.lollipop.makeupapp.ui.adapter.MyFragmentStatePagerAdapter;
+import com.example.lollipop.makeupapp.util.SdCardUtil;
 import com.example.lollipop.makeupapp.util.StatusBarUtils;
+import com.makeramen.roundedimageview.RoundedImageView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,6 +38,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.datatype.BmobFile;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.DownloadFileListener;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,6 +51,7 @@ public class HomeFragment extends Fragment {
 
     private User currentUser;
     private List<Fragment> fragments;
+    private File headIconFile;
 
     private static final String[] TITLES = new String[]{"分享", "收藏", "消息"};
 
@@ -55,6 +65,8 @@ public class HomeFragment extends Fragment {
     TabLayout tabLayout;
     @BindView(R.id.view_pager)
     ViewPager viewPager;
+    @BindView(R.id.head_img)
+    RoundedImageView headImg;
     @BindView(R.id.nickname)
     AppCompatTextView nickNameText;
     @BindView(R.id.location)
@@ -79,8 +91,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void initView(View view) {
-        currentUser = User.getCurrentUser(User.class);
-
         titleView = (TextView) view.findViewById(R.id.title);
 
         toolbar.inflateMenu(R.menu.menu_setting);
@@ -122,10 +132,24 @@ public class HomeFragment extends Fragment {
         tabLayout.addTab(tabLayout.newTab().setText(TITLES[0]));
         tabLayout.setupWithViewPager(viewPager);
 
-        //设置个人信息面板
-        nickNameText.setText(currentUser.getUsername());
-        locationText.setText(currentUser.getLocation());
-        signatureText.setText(currentUser.getLocation());
+        initInfoPanel();
     }
 
+    private void initInfoPanel(){
+        currentUser = User.getCurrentUser(User.class);
+        //设置个人信息面板
+        headIconFile = SdCardUtil.getHeadIconFile();
+        if (headIconFile.exists()){
+            headImg.setImageBitmap(BitmapFactory.decodeFile(headIconFile.getPath()));
+        }
+        nickNameText.setText(currentUser.getUsername());
+        locationText.setText(currentUser.getLocation());
+        signatureText.setText(currentUser.getSignature());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initInfoPanel();
+    }
 }
