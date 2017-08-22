@@ -7,8 +7,9 @@
     <color name="loginBtn1">#EB9E9E</color>
     <color name="loginBtn">#FF6666</color>
     <color name="red">#D00000</color>
-    <color name="white">#FFFFFF</color>
     <color name="text_default">#757575</color>
+    <color name="white">#FFFFFF</color>
+    <color name="gray_f0">#f0f0f0</color>
     <color name="gray_e3">#e3e3e3</color>
     <color name="gray_ccc">#CCCCCC</color>
     <color name="gray_bc">#bcbcbc</color>
@@ -20,4 +21,5 @@
     <color name="dark">#000000</color>
     <color name="orange">#FF6600</color>
     <color name="ripple">#818181</color>
+    <color name="blue_circle">#009DD9</color>
 </resources>

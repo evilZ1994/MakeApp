@@ -64,4 +64,15 @@
     <string name="sex_change">性别修改</string>
     <string name="take_photo">拍照</string>
     <string name="from_gallery">从相册选择图片</string>
+
+    <string name="post">发布</string>
+    <string name="exercise">健身</string>
+    <string name="skin_care">护肤</string>
+    <string name="eating">饮食</string>
+    <string name="health_care">保健品</string>
+    <string name="cosmetic">彩妆</string>
+    <string name="others">其他</string>
+    <string name="post_status">发状态</string>
+    <string name="send">发送</string>
+    <string name="share_hint">分享新鲜事...</string>
 </resources>

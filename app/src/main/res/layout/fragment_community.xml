@@ -1,13 +1,46 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     tools:context="com.example.lollipop.makeupapp.ui.fragment.CommunityFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <android.support.v7.widget.Toolbar
+        app:contentInsetStart="0dp"
+        android:elevation="2dp"
+        android:background="@color/white"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_community_fragment" />
+        android:layout_height="?attr/actionBarSize">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/title"
+            android:text="@string/username"
+            android:textSize="24sp"
+            android:textColor="@color/dark"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/post"
+            android:text="@string/post"
+            android:clickable="true"
+            android:background="@drawable/ripple_white"
+            android:gravity="center"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="10dp"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        </FrameLayout>
+    </android.support.v7.widget.Toolbar>
 
-</FrameLayout>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler"
+        android:background="@color/gray_f0"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</android.support.v7.widget.LinearLayoutCompat>
