@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/gray_f0"
     tools:context="com.example.lollipop.makeupapp.ui.activity.PostActivity">
 
     <android.support.v7.widget.Toolbar
@@ -81,6 +82,78 @@
         android:paddingEnd="10dp"
         android:paddingTop="15dp"
         android:layout_width="match_parent"
-        android:layout_height="150dp" />
+        android:layout_height="120dp" />
+    
+    <com.example.lollipop.makeupapp.ui.view.DragSortGridView
+        android:id="@+id/grid_view"
+        android:background="@color/white"
+        android:paddingBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <android.support.v7.widget.LinearLayoutCompat
+        android:id="@+id/location"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:clickable="true"
+        android:orientation="horizontal"
+        android:background="@drawable/ripple_white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/location_img"
+            app:srcCompat="@drawable/ic_location_f0"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/location_text"
+            android:text="@string/location2"
+            android:textSize="15sp"
+            android:textColor="@color/dark"
+            android:gravity="center_vertical"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </android.support.v7.widget.LinearLayoutCompat>
+
+    <android.support.v7.widget.LinearLayoutCompat
+        android:id="@+id/authority"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:layout_marginTop="20dp"
+        android:clickable="true"
+        android:orientation="horizontal"
+        android:background="@drawable/ripple_white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/authority_img"
+            app:srcCompat="@drawable/ic_earth_f0"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <android.support.v7.widget.AppCompatTextView
+            android:text="@string/who_can_see"
+            android:textSize="15sp"
+            android:textColor="@color/dark"
+            android:gravity="center_vertical"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/authority_text"
+            android:text="@string/open"
+            android:layout_gravity="center_vertical"
+            android:gravity="end"
+            android:layout_marginEnd="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </android.support.v7.widget.LinearLayoutCompat>
 
 </android.support.v7.widget.LinearLayoutCompat>

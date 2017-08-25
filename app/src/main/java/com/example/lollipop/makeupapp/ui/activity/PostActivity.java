@@ -1,5 +1,9 @@
 package com.example.lollipop.makeupapp.ui.activity;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,13 +19,26 @@ import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.GridView;
 
 import com.example.lollipop.makeupapp.R;
 import com.example.lollipop.makeupapp.app.AppManager;
 import com.example.lollipop.makeupapp.bean.bmob.User;
+import com.example.lollipop.makeupapp.ui.adapter.GridViewAdapter;
 import com.example.lollipop.makeupapp.ui.base.BaseActivity;
+import com.example.lollipop.makeupapp.ui.dialog.AuthorityChooseDialog;
 import com.example.lollipop.makeupapp.ui.listener.ScreenListener;
+import com.example.lollipop.makeupapp.ui.view.DragSortGridView;
 import com.example.lollipop.makeupapp.util.Codes;
+import com.example.lollipop.makeupapp.util.SingleFileLimitInterceptor;
+import com.imnjh.imagepicker.SImagePicker;
+import com.imnjh.imagepicker.activity.PhotoPickerActivity;
+
+import java.io.BufferedOutputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,6 +49,11 @@ public class PostActivity extends BaseActivity {
     private String tag;
     private InputWatcher watcher;
     private ScreenListener screenListener;
+    private GridViewAdapter adapter;
+    private AuthorityChooseDialog dialog;
+    private int imageCountLimit = 9;
+
+    private int mAuthority = 1;
 
     private static int TEXTWATCHER_LISTENER_FLAG = 0;
 
@@ -41,6 +63,10 @@ public class PostActivity extends BaseActivity {
     AppCompatButton postBtn;
     @BindView(R.id.input)
     AppCompatEditText inputText;
+    @BindView(R.id.grid_view)
+    DragSortGridView gridView;
+    @BindView(R.id.authority_text)
+    AppCompatTextView authorityText;
 
     @OnClick(R.id.back)
     void back(){
@@ -50,6 +76,10 @@ public class PostActivity extends BaseActivity {
     @OnClick(R.id.post)
     void post(){
 
+    }
+    @OnClick(R.id.authority)
+    void whoCanSee(){
+        dialog.show();
     }
 
     @Override
@@ -62,9 +92,22 @@ public class PostActivity extends BaseActivity {
     }
 
     private void initView() {
+        dialog = new AuthorityChooseDialog(this, R.style.InfoChangeDialogTheme, new AuthorityChooseDialog.OnChooseListener() {
+            @Override
+            public void onChoose(int authority) {
+                mAuthority = authority;
+                if (mAuthority == 1){
+                    authorityText.setText("公开");
+                }else if (mAuthority == -1){
+                    authorityText.setText("私密");
+                }
+                dialog.dismiss();
+            }
+        });
         currentUser = User.getCurrentUser(User.class);
         tag = "#"+getIntent().getStringExtra("tag")+"#";
         watcher = new InputWatcher();
+        adapter = new GridViewAdapter(this);
 
         usernameText.setText(currentUser.getUsername());
         //插入话题
@@ -97,6 +140,30 @@ public class PostActivity extends BaseActivity {
             }
         });
         inputText.setOnClickListener(new OnInputClickListener());
+
+        gridView.setFootNoPositionChangeItemCount(1);//最后一个不能被拖动
+        gridView.setDragModel(DragSortGridView.DRAG_BY_LONG_CLICK);
+        gridView.setNumColumns(4);//4列
+        gridView.setAdapter(adapter);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                if (adapter.getPaths().get(position) != null){
+                    Intent intent = new Intent(getContext(), PostImageViewActivity.class);
+                    intent.putStringArrayListExtra("paths", (ArrayList<String>) adapter.getPaths());
+                    intent.putExtra("position", position);
+                    startActivityForResult(intent, Codes.POST_IMAGE_PREVIEW_REQUEST_CODE);
+                }else {
+                    SImagePicker
+                            .from(getActivity())
+                            .maxCount(imageCountLimit)
+                            .rowCount(3)
+                            .showCamera(true)
+                            .pickMode(SImagePicker.MODE_IMAGE)
+                            .forResult(Codes.IMAGE_REQUEST_CODE);
+                }
+            }
+        });
     }
 
     /**
@@ -172,6 +239,7 @@ public class PostActivity extends BaseActivity {
             }
             //重新设置监听
             inputText.addTextChangedListener(watcher);
+            //TEXTWATCHER_LISTENER_FLAG = 1;
         }
     }
 
@@ -193,5 +261,24 @@ public class PostActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         screenListener.unregisterListener();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK && requestCode == Codes.IMAGE_REQUEST_CODE){
+            ArrayList<String> pathList = data.getStringArrayListExtra(PhotoPickerActivity.EXTRA_RESULT_SELECTION);
+            adapter.addImages(pathList);
+            imageCountLimit = imageCountLimit - pathList.size();
+            if (imageCountLimit == 0){
+                gridView.setFootNoPositionChangeItemCount(0);
+            }
+        }else if (resultCode == Codes.POST_IMAGE_PREVIEW_RESULT_CODE && requestCode == Codes.POST_IMAGE_PREVIEW_REQUEST_CODE){
+            List<String> deletePaths = data.getStringArrayListExtra("deletePaths");
+            if (deletePaths != null && deletePaths.size() > 0){
+                adapter.removeImages(deletePaths);
+            }
+            imageCountLimit = imageCountLimit + deletePaths.size();
+        }
     }
 }

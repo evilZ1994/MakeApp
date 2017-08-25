@@ -6,6 +6,17 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="toolbarStyle">@style/Widget.AppCompat.Toolbar</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="actionBarStyle">@style/ActionBarStyleNoShadow</item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_general_back</item>
+        <item name="homeAsUpIndicator">@drawable/ic_general_back</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">?attr/colorAccent</item>
     </style>
 
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
@@ -18,7 +29,12 @@
 
     <style name="NoTitleTheme" parent="Theme.AppCompat.Light">
         <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
         <item name="android:statusBarColor">@color/white</item>
+    </style>
+
+    <style name="FullScreenTheme" parent="NoTitleTheme">
+        <item name="android:windowFullscreen">true</item>
     </style>
 
     <style name="LoginButton" parent="AppTheme">

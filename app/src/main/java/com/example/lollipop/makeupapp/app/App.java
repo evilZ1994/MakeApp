@@ -2,10 +2,15 @@ package com.example.lollipop.makeupapp.app;
 
 import android.app.Application;
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 
+import com.example.lollipop.makeupapp.R;
 import com.example.lollipop.makeupapp.injector.component.ApplicationComponent;
 import com.example.lollipop.makeupapp.injector.component.DaggerApplicationComponent;
 import com.example.lollipop.makeupapp.injector.module.ApplicationModule;
+import com.example.lollipop.makeupapp.ui.ImageLoader.FrescoImageLoader;
+import com.imnjh.imagepicker.PickerConfig;
+import com.imnjh.imagepicker.SImagePicker;
 
 import cn.bmob.v3.Bmob;
 
@@ -27,6 +32,14 @@ public class App extends Application {
 
         setupInjector();
         bmobInit();
+        SImagePickerInit();
+    }
+
+    private void SImagePickerInit() {
+        SImagePicker.init(new PickerConfig.Builder().setAppContext(this)
+                .setImageLoader(new FrescoImageLoader())
+                .setToolbaseColor(ContextCompat.getColor(this, R.color.colorAccent))
+                .build());
     }
 
     private void bmobInit() {
