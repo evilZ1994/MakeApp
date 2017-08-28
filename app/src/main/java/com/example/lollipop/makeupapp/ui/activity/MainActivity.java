@@ -56,6 +56,7 @@ public class MainActivity extends BaseActivity {
         fragmentList.add(homeFragment);
 
         fragmentPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), fragmentList);
+        viewPager.setOffscreenPageLimit(3);
         viewPager.setAdapter(fragmentPagerAdapter);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {

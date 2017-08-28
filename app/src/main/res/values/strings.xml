@@ -87,4 +87,8 @@
     <string name="everyone_can_see">所有人可见</string>
     <string name="privacy">私密</string>
     <string name="self_can_see">仅自己可见</string>
+    <string name="uploading">正在上传</string>
+    <string name="uploading_progress">正在上传： 第</string>
+    <string name="uploading_progress_2">张图片......</string>
+    <string name="zero">0</string>
 </resources>

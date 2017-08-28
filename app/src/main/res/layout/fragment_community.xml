@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:background="@color/gray_f0"
     tools:context="com.example.lollipop.makeupapp.ui.fragment.CommunityFragment">
 
     <android.support.v7.widget.Toolbar
@@ -43,4 +44,16 @@
         android:background="@color/gray_f0"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/main_recycler"
+            android:layout_marginTop="10dp"
+            android:paddingBottom="55dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 </android.support.v7.widget.LinearLayoutCompat>

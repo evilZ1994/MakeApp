@@ -2,57 +2,57 @@ package com.example.lollipop.makeupapp.ui.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatTextView;
 import android.text.Editable;
-import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.GridView;
+import android.widget.Toast;
 
 import com.example.lollipop.makeupapp.R;
 import com.example.lollipop.makeupapp.app.AppManager;
+import com.example.lollipop.makeupapp.bean.bmob.Post;
 import com.example.lollipop.makeupapp.bean.bmob.User;
-import com.example.lollipop.makeupapp.ui.adapter.GridViewAdapter;
+import com.example.lollipop.makeupapp.ui.adapter.DragGridViewAdapter;
 import com.example.lollipop.makeupapp.ui.base.BaseActivity;
 import com.example.lollipop.makeupapp.ui.dialog.AuthorityChooseDialog;
+import com.example.lollipop.makeupapp.ui.dialog.ImageUploadProgressDialog;
 import com.example.lollipop.makeupapp.ui.listener.ScreenListener;
 import com.example.lollipop.makeupapp.ui.view.DragSortGridView;
 import com.example.lollipop.makeupapp.util.Codes;
-import com.example.lollipop.makeupapp.util.SingleFileLimitInterceptor;
 import com.imnjh.imagepicker.SImagePicker;
 import com.imnjh.imagepicker.activity.PhotoPickerActivity;
 
-import java.io.BufferedOutputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.bmob.v3.datatype.BmobFile;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.SaveListener;
+import cn.bmob.v3.listener.UploadBatchListener;
 
 public class PostActivity extends BaseActivity {
     private User currentUser;
     private String tag;
     private InputWatcher watcher;
     private ScreenListener screenListener;
-    private GridViewAdapter adapter;
+    private DragGridViewAdapter adapter;
     private AuthorityChooseDialog dialog;
-    private int imageCountLimit = 9;
+    private ImageUploadProgressDialog progressDialog;
+    private Post post;
 
+    private int imageCountLimit = 9;
     private int mAuthority = 1;
 
     private static int TEXTWATCHER_LISTENER_FLAG = 0;
@@ -75,6 +75,76 @@ public class PostActivity extends BaseActivity {
     }
     @OnClick(R.id.post)
     void post(){
+        progressDialog.show();
+        post = new Post();
+        String text = inputText.getText().toString();
+        String classification;
+        String content;
+        if (text.contains(tag)) {
+            classification = tag.substring(1, tag.length()-1);
+            content = text.replace(tag, "");
+        }else {
+            classification = null;
+            content = text;
+        }
+        post.setClassification(classification);
+        post.setContent(content);
+        post.setAuthor(currentUser);
+        post.setAuthority(mAuthority);
+        final SaveListener saveListener = new SaveListener<String>() {
+            @Override
+            public void done(String s, BmobException e) {
+                if (e == null) {
+                    Toast.makeText(getContext(), "发布成功", Toast.LENGTH_SHORT).show();
+                    AppManager.getInstance().finishActivity();
+                } else {
+                    Toast.makeText(getContext(), "发布失败", Toast.LENGTH_SHORT).show();
+                }
+                if (progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
+            }
+        };
+        List<String> paths = adapter.getPaths();
+        if (paths.get(paths.size()-1) == null){
+            paths.remove(paths.size()-1);
+        }
+        if (paths.size()==0){
+            post.save(saveListener);
+        }else {
+            //上传图片
+            final String[] files = new String[paths.size()];
+            paths.toArray(files);
+            BmobFile.uploadBatch(files, new UploadBatchListener() {
+                @Override
+                public void onSuccess(List<BmobFile> list, List<String> list1) {
+                    if (list1.size() == files.length) {
+                        post.setImages(list1);
+                        post.save(saveListener);
+                    }
+                }
+
+                @Override
+                public void onProgress(int curIndex, int curPercent, int total, int totalPercent) {
+                    //1、curIndex--表示当前第几个文件正在上传
+                    //2、curPercent--表示当前上传文件的进度值（百分比）
+                    //3、total--表示总的上传文件数
+                    //4、totalPercent--表示总的上传进度（百分比）
+                    progressDialog.setProgress(curIndex, curPercent, total, totalPercent);
+                }
+
+                @Override
+                public void onError(int i, String s) {
+                    Toast.makeText(getContext(), "上传失败", Toast.LENGTH_SHORT).show();
+                    if (progressDialog.isShowing()) {
+                        progressDialog.dismiss();
+                    }
+                }
+            });
+        }
+    }
+    @OnClick(R.id.location)
+    void location(){
 
     }
     @OnClick(R.id.authority)
@@ -104,10 +174,12 @@ public class PostActivity extends BaseActivity {
                 dialog.dismiss();
             }
         });
+        progressDialog = new ImageUploadProgressDialog(this, R.style.ProgressDialogTheme);
+
         currentUser = User.getCurrentUser(User.class);
         tag = "#"+getIntent().getStringExtra("tag")+"#";
         watcher = new InputWatcher();
-        adapter = new GridViewAdapter(this);
+        adapter = new DragGridViewAdapter(this);
 
         usernameText.setText(currentUser.getUsername());
         //插入话题

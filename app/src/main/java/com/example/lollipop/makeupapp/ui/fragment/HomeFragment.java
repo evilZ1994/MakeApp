@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -46,8 +47,7 @@ import cn.bmob.v3.listener.DownloadFileListener;
  * A simple {@link Fragment} subclass.
  */
 public class HomeFragment extends Fragment {
-    private TextView titleView;
-    private MenuItem menuItem;
+    //private AppCompatTextView titleView;
 
     private User currentUser;
     private List<Fragment> fragments;
@@ -73,6 +73,15 @@ public class HomeFragment extends Fragment {
     AppCompatTextView locationText;
     @BindView(R.id.signature)
     AppCompatTextView signatureText;
+    @BindView(R.id.title)
+    AppCompatTextView titleView;
+    @BindView(R.id.setting)
+    AppCompatImageView setting;
+
+    @OnClick(R.id.setting)
+    void setting(){
+        startActivity(new Intent(getContext(), SettingActivity.class));
+    }
 
     public HomeFragment() {
         // Required empty public constructor
@@ -91,29 +100,18 @@ public class HomeFragment extends Fragment {
     }
 
     private void initView(View view) {
-        titleView = (TextView) view.findViewById(R.id.title);
+        titleView = (AppCompatTextView) view.findViewById(R.id.title);
 
-        toolbar.inflateMenu(R.menu.menu_setting);
-        menuItem = toolbar.getMenu().getItem(0);
-        menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                startActivity(new Intent(getContext(), SettingActivity.class));
-                return true;
-            }
-        });
         //绑定滑动监听，改变ToolBar上标题图标等颜色
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
                 if (Math.abs(verticalOffset) >= appBarLayout.getTotalScrollRange()){
                     titleView.setTextColor(ContextCompat.getColor(getContext(), R.color.dark));
-                    toolbar.setNavigationIcon(R.drawable.ic_back_dark);
-                    menuItem.setIcon(R.drawable.ic_setting_dark);
+                    setting.setImageResource(R.drawable.ic_setting_dark);
                 }else {
                     titleView.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
-                    toolbar.setNavigationIcon(R.drawable.ic_back_white);
-                    menuItem.setIcon(R.drawable.ic_setting_white);
+                    setting.setImageResource(R.drawable.ic_setting_white);
                 }
             }
         });

@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,9 +23,11 @@ import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.example.lollipop.makeupapp.R;
+import com.example.lollipop.makeupapp.bean.bmob.Post;
 import com.example.lollipop.makeupapp.bean.bmob.User;
 import com.example.lollipop.makeupapp.ui.activity.PostActivity;
 import com.example.lollipop.makeupapp.ui.adapter.ClassificationRecycleAdapter;
+import com.example.lollipop.makeupapp.ui.adapter.PostRecyclerAdapter;
 import com.example.lollipop.makeupapp.ui.base.BaseFragment;
 import com.example.lollipop.makeupapp.util.Codes;
 
@@ -34,6 +37,10 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.datatype.BmobFile;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.FindListener;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,8 +49,11 @@ public class CommunityFragment extends BaseFragment {
     private User currentUser;
     private List<Integer> images;
     private List<String> titles;
-    private ClassificationRecycleAdapter adapter;
-    private LinearLayoutManager layoutManager;
+    private ClassificationRecycleAdapter classificationAdapter;
+    private PostRecyclerAdapter postAdapter;
+    private List<Post> posts;
+    private LinearLayoutManager layoutManager1;
+    private LinearLayoutManager layoutManager2;
     private PopupWindow popupWindow;
 
     private Context context;
@@ -61,6 +71,10 @@ public class CommunityFragment extends BaseFragment {
     @BindView(R.id.title)
     AppCompatTextView titleText;
     @BindView(R.id.recycler)
+    RecyclerView classificationRecycler;
+    @BindView(R.id.swipe_layout)
+    SwipeRefreshLayout refreshLayout;
+    @BindView(R.id.main_recycler)
     RecyclerView recyclerView;
 
     @OnClick(R.id.post)
@@ -76,6 +90,7 @@ public class CommunityFragment extends BaseFragment {
         ButterKnife.bind(this, view);
 
         initView();
+        initPostList();
         return view;
     }
 
@@ -89,13 +104,45 @@ public class CommunityFragment extends BaseFragment {
             images.add(imgResources[i]);
             titles.add(titleTexts[i]);
         }
-        adapter = new ClassificationRecycleAdapter(getContext(), images, titles);
-        adapter.setOnItemClickListener(new ClassificationListener());
-        layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
+        classificationAdapter = new ClassificationRecycleAdapter(getContext(), images, titles);
+        classificationAdapter.setOnItemClickListener(new ClassificationListener());
+        layoutManager1 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        classificationRecycler.setLayoutManager(layoutManager1);
+        classificationRecycler.setAdapter(classificationAdapter);
 
         titleText.setText(currentUser.getUsername());
+
+    }
+
+    private void initPostList(){
+        posts = new ArrayList<>();
+        postAdapter = new PostRecyclerAdapter(getContext(), posts);
+        layoutManager2 = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(layoutManager2);
+        recyclerView.setAdapter(postAdapter);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                //查询帖子和用户
+                BmobQuery<Post> query = new BmobQuery<Post>();
+                query.include("author");//将作者信息也一起查询出来
+                query.findObjects(new FindListener<Post>() {
+                    @Override
+                    public void done(List<Post> list, BmobException e) {
+                        if (e == null) {
+                            postAdapter.setPosts(list);
+                            Toast.makeText(getContext(), "更新了"+list.size()+"条动态", Toast.LENGTH_SHORT).show();
+                        }else {
+                            Toast.makeText(getContext(), "更新失败", Toast.LENGTH_SHORT).show();
+                        }
+                        if (refreshLayout.isRefreshing()){
+                            refreshLayout.setRefreshing(false);
+                        }
+                    }
+                });
+            }
+        });
+        //refreshLayout.setRefreshing(true);
     }
 
     private void showPopupWindow() {

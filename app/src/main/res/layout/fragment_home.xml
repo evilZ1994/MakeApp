@@ -2,16 +2,16 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.example.lollipop.makeupapp.ui.fragment.HomeFragment">
 
     <android.support.v4.view.ViewPager
         android:id="@id/view_pager"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar_layout"
@@ -81,12 +81,12 @@
                             android:id="@+id/location"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:maxWidth="80dp"
                             android:text="@string/location_test"
                             android:textColor="@color/white"
-                            android:textSize="12sp"
-                            android:maxLines="1"
-                            android:ellipsize="end"
-                            android:maxWidth="80dp"/>
+                            android:textSize="12sp" />
                     </android.support.v7.widget.LinearLayoutCompat>
                 </RelativeLayout>
 
@@ -236,20 +236,36 @@
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
+                app:contentInsetStart="0dp"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin"
-                app:navigationIcon="@drawable/ic_back_white"
-                app:titleTextColor="@color/white">
+                app:layout_collapseMode="pin">
 
-                <TextView
-                    android:id="@+id/title"
+                <RelativeLayout
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="@string/account_manage"
-                    android:textColor="@color/white"
-                    android:textSize="20sp" />
+                    android:orientation="horizontal">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:gravity="center"
+                        android:text="@string/account_manage"
+                        android:textColor="@color/white"
+                        android:textSize="20sp" />
+
+                    <android.support.v7.widget.AppCompatImageView
+                        android:id="@+id/setting"
+                        android:clickable="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_setting_white" />
+                </RelativeLayout>
             </android.support.v7.widget.Toolbar>
         </android.support.design.widget.CollapsingToolbarLayout>
 
