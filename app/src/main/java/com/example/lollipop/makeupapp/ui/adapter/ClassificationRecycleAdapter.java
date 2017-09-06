@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 
 import com.example.lollipop.makeupapp.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,6 +23,8 @@ public class ClassificationRecycleAdapter extends RecyclerView.Adapter<Classific
     private List<String> titles;
     private LayoutInflater inflater;
     private OnItemClickListener onItemClickListener;
+
+    private ViewHolder viewHolder;
 
     public ClassificationRecycleAdapter(Context context, List<Integer> images, List<String> titles){
         this.images = images;
@@ -61,14 +64,21 @@ public class ClassificationRecycleAdapter extends RecyclerView.Adapter<Classific
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.imageView.setImageResource(images.get(position));
         holder.titleView.setText(titles.get(position));
         if (onItemClickListener != null) {
             holder.imageView.setOnClickListener(new View.OnClickListener() {
+
+
                 @Override
                 public void onClick(View view) {
                     onItemClickListener.onItemClick(view, position);
+                    if (viewHolder != null){
+                        viewHolder.itemLayout.setPressed(false);
+                    }
+                    viewHolder = holder;
+                    viewHolder.itemLayout.setPressed(true);
                 }
             });
         }

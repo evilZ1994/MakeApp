@@ -20,7 +20,8 @@ import java.util.List;
 
 public class GridViewAdapter extends BaseAdapter{
     private Context context;
-    List<String> images;
+    private OnItemClickListener listener;
+    private List<String> images;
 
     public GridViewAdapter(Context context, List<String> images){
         this.context = context;
@@ -47,7 +48,7 @@ public class GridViewAdapter extends BaseAdapter{
     }
 
     @Override
-    public View getView(int position, View view, ViewGroup viewGroup) {
+    public View getView(final int position, View view, ViewGroup viewGroup) {
         ViewHolder viewHolder = null;
         if (view == null){
             viewHolder = new ViewHolder();
@@ -60,8 +61,25 @@ public class GridViewAdapter extends BaseAdapter{
         viewHolder.draweeView.setImageURI(images.get(position));
         GenericDraweeHierarchyBuilder builder = new GenericDraweeHierarchyBuilder(context.getResources());
         GenericDraweeHierarchy hierarchy = builder.setActualImageScaleType(ScalingUtils.ScaleType.CENTER_CROP).build();
+        hierarchy.setPlaceholderImage(context.getDrawable(R.drawable.ic_placeholder));
         viewHolder.draweeView.setHierarchy(hierarchy);
+        if (listener != null){
+            viewHolder.draweeView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onItemClick(position);
+                }
+            });
+        }
 
         return view;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener){
+        this.listener = listener;
+    }
+
+    public interface OnItemClickListener{
+        void onItemClick(int position);
     }
 }

@@ -1,6 +1,7 @@
 package com.example.lollipop.makeupapp.ui.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +15,7 @@ import com.example.lollipop.makeupapp.bean.bmob.Collect;
 import com.example.lollipop.makeupapp.bean.bmob.Like;
 import com.example.lollipop.makeupapp.bean.bmob.Post;
 import com.example.lollipop.makeupapp.bean.bmob.User;
+import com.example.lollipop.makeupapp.ui.activity.ImageViewActivity;
 import com.example.lollipop.makeupapp.ui.view.MyGridView;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
@@ -109,8 +111,8 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         holder.postTimeText.setText(post.getCreatedAt());
         //正文内容
         holder.contentText.setText(post.getContent());
-        //gridview 配置
-        List<String> imageList = post.getImages();
+        //grid view 配置
+        final List<String> imageList = post.getImages();
         if (imageList != null && imageList.size() > 0){
             List<String> images = new ArrayList<>();
             for (String path : imageList){
@@ -119,7 +121,20 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             GridViewAdapter adapter = new GridViewAdapter(context, images);
             holder.gridView.setAdapter(adapter);
             //绑定监听
-
+            adapter.setOnItemClickListener(new GridViewAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(int position) {
+                    Intent intent = new Intent(context, ImageViewActivity.class);
+                    intent.putStringArrayListExtra("paths", (ArrayList<String>)imageList);
+                    intent.putExtra("position", position);
+                    context.startActivity(intent);
+                }
+            });
+        }else {
+            //没有图片
+            List<String> images = new ArrayList<>();
+            GridViewAdapter adapter = new GridViewAdapter(context, images);
+            holder.gridView.setAdapter(adapter);
         }
         //收藏
         Post queryPost = new Post();
@@ -131,9 +146,17 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             @Override
             public void done(List<Collect> list, BmobException e) {
                 if (list!=null && list.size()>0){
-                    holder.collectedText.setCompoundDrawablesRelativeWithIntrinsicBounds(context.getDrawable(R.drawable.ic_collect2), null, null, null);
+                    //holder.collectedText.setCompoundDrawablesRelativeWithIntrinsicBounds(context.getDrawable(R.drawable.ic_collect2), null, null, null);
                     holder.collectClick = true;
                     holder.collect = list.get(0);
+                }else {
+                    holder.collectClick = false;
+                    holder.collect = null;
+                }
+                if (holder.collectClick){
+                    holder.collectedText.setCompoundDrawablesRelativeWithIntrinsicBounds(context.getDrawable(R.drawable.ic_collect2), null, null, null);
+                }else {
+                    holder.collectedText.setCompoundDrawablesRelativeWithIntrinsicBounds(context.getDrawable(R.drawable.ic_collect1), null, null, null);
                 }
             }
         });
@@ -150,9 +173,17 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             @Override
             public void done(List<Like> list, BmobException e) {
                 if (list!=null && list.size()>0){
-                    holder.thumbText.setCompoundDrawablesRelativeWithIntrinsicBounds(context.getDrawable(R.drawable.ic_thumb2), null, null, null);
+                    //holder.thumbText.setCompoundDrawablesRelativeWithIntrinsicBounds(context.getDrawable(R.drawable.ic_thumb2), null, null, null);
                     holder.thumbClick = true;
                     holder.like = list.get(0);
+                }else {
+                    holder.thumbClick = false;
+                    holder.like = null;
+                }
+                if (holder.thumbClick){
+                    holder.thumbText.setCompoundDrawablesRelativeWithIntrinsicBounds(context.getDrawable(R.drawable.ic_thumb2), null, null, null);
+                }else {
+                    holder.thumbText.setCompoundDrawablesRelativeWithIntrinsicBounds(context.getDrawable(R.drawable.ic_thumb1), null, null, null);
                 }
             }
         });

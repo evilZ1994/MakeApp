@@ -13,6 +13,7 @@ import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,14 +31,17 @@ import com.example.lollipop.makeupapp.ui.adapter.ClassificationRecycleAdapter;
 import com.example.lollipop.makeupapp.ui.adapter.PostRecyclerAdapter;
 import com.example.lollipop.makeupapp.ui.base.BaseFragment;
 import com.example.lollipop.makeupapp.util.Codes;
+import com.example.lollipop.makeupapp.util.DateFormatUtil;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.datatype.BmobDate;
 import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
@@ -48,7 +52,7 @@ import cn.bmob.v3.listener.FindListener;
 public class CommunityFragment extends BaseFragment {
     private User currentUser;
     private List<Integer> images;
-    private List<String> titles;
+    private List<String> classifications;
     private ClassificationRecycleAdapter classificationAdapter;
     private PostRecyclerAdapter postAdapter;
     private List<Post> posts;
@@ -64,9 +68,10 @@ public class CommunityFragment extends BaseFragment {
             R.drawable.ic_eating, R.drawable.ic_healthcare,
             R.drawable.ic_cosmetic, R.drawable.ic_menu
     };
-    private String[] titleTexts = {
+    private String[] classificationTexts = {
             "健身", "护肤", "饮食", "保健品", "彩妆", "其他"
     };
+    private String classification = "none";
 
     @BindView(R.id.title)
     AppCompatTextView titleText;
@@ -99,12 +104,12 @@ public class CommunityFragment extends BaseFragment {
         activity = getActivity();
         currentUser = User.getCurrentUser(User.class);
         images = new ArrayList<>();
-        titles = new ArrayList<>();
-        for (int i=0; i<titleTexts.length; i++){
+        classifications = new ArrayList<>();
+        for (int i=0; i<classificationTexts.length; i++){
             images.add(imgResources[i]);
-            titles.add(titleTexts[i]);
+            classifications.add(classificationTexts[i]);
         }
-        classificationAdapter = new ClassificationRecycleAdapter(getContext(), images, titles);
+        classificationAdapter = new ClassificationRecycleAdapter(getContext(), images, classifications);
         classificationAdapter.setOnItemClickListener(new ClassificationListener());
         layoutManager1 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         classificationRecycler.setLayoutManager(layoutManager1);
@@ -123,26 +128,58 @@ public class CommunityFragment extends BaseFragment {
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                //查询帖子和用户
-                BmobQuery<Post> query = new BmobQuery<Post>();
-                query.include("author");//将作者信息也一起查询出来
-                query.findObjects(new FindListener<Post>() {
-                    @Override
-                    public void done(List<Post> list, BmobException e) {
-                        if (e == null) {
-                            postAdapter.setPosts(list);
-                            Toast.makeText(getContext(), "更新了"+list.size()+"条动态", Toast.LENGTH_SHORT).show();
-                        }else {
-                            Toast.makeText(getContext(), "更新失败", Toast.LENGTH_SHORT).show();
-                        }
-                        if (refreshLayout.isRefreshing()){
-                            refreshLayout.setRefreshing(false);
-                        }
-                    }
-                });
+                //获取动态
+                pullPosts();
             }
         });
-        //refreshLayout.setRefreshing(true);
+
+    }
+
+    private void pullPosts() {
+        //查询帖子和用户
+        BmobQuery<Post> query = new BmobQuery<Post>();
+        query.include("author");//将作者信息也一起查询出来
+        if (!classification.equals("none")){
+            //根据分类查找
+            query.addWhereEqualTo("classification", classification);
+            //移除posts里其它标签的内容
+            List<Post> temp = new ArrayList<>();
+            for (Post post : posts){
+                if (!post.getClassification().equals(classification)){
+                    //迭代过程中不能修改list中的内容，所以用了一个临时的list暂存
+                    temp.add(0, post);
+                }
+            }
+            posts.removeAll(temp);
+        }
+        if (posts.size() > 0){
+            //对比时间，查找最新动态
+            Date date = DateFormatUtil.format1(posts.get(0).getCreatedAt());
+            //服务器上时间精确到毫秒，加上1000ms会丢失这个一秒内的数据，但是不会重复加载
+            date.setTime(date.getTime()+1000);
+            query.addWhereGreaterThan("createdAt", new BmobDate(date));
+        }
+        query.findObjects(new FindListener<Post>() {
+            @Override
+            public void done(List<Post> list, BmobException e) {
+                if (e == null) {
+                    if (list.size()>0) {
+                        for (Post post : list){
+                            posts.add(0, post);
+                        }
+                    }
+                    postAdapter.setPosts(posts);
+                    Toast.makeText(getContext(), "更新了"+list.size()+"条动态", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(getContext(), "更新失败", Toast.LENGTH_SHORT).show();
+                }
+
+                //取消刷新
+                if (refreshLayout.isRefreshing()){
+                    refreshLayout.setRefreshing(false);
+                }
+            }
+        });
     }
 
     private void showPopupWindow() {
@@ -198,8 +235,8 @@ public class CommunityFragment extends BaseFragment {
     private class ClassificationListener implements ClassificationRecycleAdapter.OnItemClickListener{
         @Override
         public void onItemClick(View view, int position) {
-            //do something
-            Toast.makeText(getContext(), titles.get(position), Toast.LENGTH_SHORT).show();
+            classification = classificationTexts[position];
+            pullPosts();
         }
     }
 

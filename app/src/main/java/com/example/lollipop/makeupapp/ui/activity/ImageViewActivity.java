@@ -1,41 +1,30 @@
 package com.example.lollipop.makeupapp.ui.activity;
 
 import android.content.Intent;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.Button;
 
 import com.example.lollipop.makeupapp.R;
 import com.example.lollipop.makeupapp.app.AppManager;
 import com.example.lollipop.makeupapp.ui.adapter.ImagePreviewPagerAdapter;
 import com.example.lollipop.makeupapp.ui.base.BaseActivity;
-import com.example.lollipop.makeupapp.ui.dialog.IsDeleteDialog;
-import com.example.lollipop.makeupapp.util.Codes;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class PostImageViewActivity extends BaseActivity {
+public class ImageViewActivity extends BaseActivity {
     private ImagePreviewPagerAdapter adapter;
     private List<String> paths;
-    private List<String> deletePaths;
-    private IsDeleteDialog dialog;
     private int mPosition;
-    private int num;
-
-    private Intent resultIntent;
 
     private boolean isHide = false;
 
@@ -49,61 +38,35 @@ public class PostImageViewActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_post_image_view);
+        setContentView(R.layout.activity_image_view);
 
         ButterKnife.bind(this);
 
         Intent intent = getIntent();
         paths = intent.getStringArrayListExtra("paths");
-        if (paths.get(paths.size()-1) == null) {
-            paths.remove(paths.size() - 1);//最后一个空白的移除
-        }
         mPosition = intent.getIntExtra("position", 0);
-        num = mPosition+1;
-
-        resultIntent = new Intent();
 
         initView();
     }
 
     private void initView() {
-        deletePaths = new ArrayList<>();
-        dialog = new IsDeleteDialog(this, R.style.InfoChangeDialogTheme, new IsDeleteDialog.OnDeleteListener() {
-            @Override
-            public void onDelete() {
-                //删除操作
-                String path = adapter.deleteItem(mPosition);
-                deletePaths.add(path);
-
-                imgCountText.setText((viewPager.getCurrentItem()+1)+"/"+adapter.getCount());
-                //回传删除数据
-                resultIntent.putStringArrayListExtra("deletePaths", (ArrayList<String>) deletePaths);
-                setResult(Codes.POST_IMAGE_PREVIEW_RESULT_CODE, resultIntent);
-                //如果删除最后一张，则直接返回
-                if (paths.size() == 0){
-                    AppManager.getInstance().finishActivity();
-                }
-                dialog.dismiss();
-            }
-        });
-
-        toolbar.inflateMenu(R.menu.menu_delete);
-        imgCountText.setText(num+"/"+paths.size());
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AppManager.getInstance().finishActivity();
-            }
-        });
+        toolbar.inflateMenu(R.menu.menu_menu);
         toolbar.getMenu().getItem(0).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                dialog.show();
+            public boolean onMenuItemClick(MenuItem item) {
+                //弹出选项框，保存\分享等
                 return false;
             }
         });
+        imgCountText.setText((mPosition+1)+"/"+paths.size());
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AppManager.getInstance().finishActivity();
+            }
+        });
 
-        adapter = new ImagePreviewPagerAdapter(this, paths, ImagePreviewPagerAdapter.TAG_LOCAL);
+        adapter = new ImagePreviewPagerAdapter(this, paths, ImagePreviewPagerAdapter.TAG_NET);
         adapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -125,8 +88,7 @@ public class PostImageViewActivity extends BaseActivity {
 
             @Override
             public void onPageSelected(int position) {
-                num = position+1;
-                imgCountText.setText(num+"/"+paths.size());
+                imgCountText.setText((position+1)+"/"+paths.size());
                 mPosition = position;
             }
 
@@ -136,10 +98,5 @@ public class PostImageViewActivity extends BaseActivity {
             }
         });
         viewPager.setCurrentItem(mPosition);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 }

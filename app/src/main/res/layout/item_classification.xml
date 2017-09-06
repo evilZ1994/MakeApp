@@ -10,7 +10,7 @@
     <FrameLayout
         android:id="@+id/item"
         android:clickable="true"
-        android:background="@drawable/circle_shape"
+        android:background="@drawable/classification_background_selector"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         <android.support.v7.widget.AppCompatImageView
