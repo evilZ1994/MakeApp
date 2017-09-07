@@ -91,4 +91,9 @@
     <string name="uploading_progress">正在上传： 第</string>
     <string name="uploading_progress_2">张图片......</string>
     <string name="zero">0</string>
+    <string name="edit">编辑</string>
+    <string name="finish">完成</string>
+    <string name="edit_content">编辑内容</string>
+    <string name="edit_time">编辑时间</string>
+    <string name="timer_start">起：</string>
 </resources>

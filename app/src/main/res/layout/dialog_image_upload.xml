@@ -8,11 +8,11 @@
     <com.example.lollipop.makeupapp.ui.view.RoundProgressBarWidthNumber
         android:id="@+id/progressbar"
         android:padding="20dp"
-        app:progress_unreached_bar_height="5dp"
+        app:progress_unreached_bar_height="3dp"
         app:progress_text_color="@color/colorAccent"
-        app:progress_text_size="30sp"
-        app:radius="60dp"
-        android:progress="100"
+        app:progress_text_size="20sp"
+        app:radius="40dp"
+        android:progress="0"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <android.support.v7.widget.LinearLayoutCompat
@@ -45,7 +45,8 @@
             android:text="100%"
             android:textSize="18sp"
             android:textColor="@color/dark"
-            android:layout_width="wrap_content"
+            android:gravity="end"
+            android:layout_width="60dp"
             android:layout_height="wrap_content" />
     </android.support.v7.widget.LinearLayoutCompat>
 </android.support.v7.widget.LinearLayoutCompat>

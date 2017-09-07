@@ -5,14 +5,12 @@ import android.content.Intent;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
 
 import com.example.lollipop.makeupapp.R;
-import com.example.lollipop.makeupapp.bean.bmob.Collect;
-import com.example.lollipop.makeupapp.bean.bmob.Like;
 import com.example.lollipop.makeupapp.bean.bmob.Post;
 import com.example.lollipop.makeupapp.bean.bmob.User;
 import com.example.lollipop.makeupapp.ui.activity.ImageViewActivity;
@@ -27,9 +25,9 @@ import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.datatype.BmobPointer;
+import cn.bmob.v3.datatype.BmobRelation;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
-import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
 
 
@@ -68,8 +66,6 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         LinearLayoutCompat thumbTimes;
         AppCompatTextView thumbText;
 
-        Collect collect;
-        Like like;
         boolean collectClick = false;
         boolean commentClick = false;
         boolean thumbClick = false;
@@ -137,26 +133,24 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
             holder.gridView.setAdapter(adapter);
         }
         //收藏
-        Post queryPost = new Post();
+        final Post queryPost = new Post();
         queryPost.setObjectId(post.getObjectId());
-        BmobQuery<Collect> collectQuery = new BmobQuery<>();
-        collectQuery.addWhereEqualTo("post", new BmobPointer(queryPost));
-        collectQuery.addWhereEqualTo("user", new BmobPointer(currentUser));
-        collectQuery.findObjects(new FindListener<Collect>() {
+        BmobQuery<User> collectQuery = new BmobQuery<>();
+        collectQuery.addWhereRelatedTo("collect", new BmobPointer(queryPost));
+        collectQuery.findObjects(new FindListener<User>() {
             @Override
-            public void done(List<Collect> list, BmobException e) {
-                if (list!=null && list.size()>0){
-                    //holder.collectedText.setCompoundDrawablesRelativeWithIntrinsicBounds(context.getDrawable(R.drawable.ic_collect2), null, null, null);
-                    holder.collectClick = true;
-                    holder.collect = list.get(0);
-                }else {
-                    holder.collectClick = false;
-                    holder.collect = null;
-                }
-                if (holder.collectClick){
-                    holder.collectedText.setCompoundDrawablesRelativeWithIntrinsicBounds(context.getDrawable(R.drawable.ic_collect2), null, null, null);
-                }else {
-                    holder.collectedText.setCompoundDrawablesRelativeWithIntrinsicBounds(context.getDrawable(R.drawable.ic_collect1), null, null, null);
+            public void done(List<User> list, BmobException e) {
+                if (list != null) {
+                    if (list.contains(currentUser)) {
+                        holder.collectClick = true;
+                    } else {
+                        holder.collectClick = false;
+                    }
+                    if (holder.collectClick) {
+                        holder.collectedText.setCompoundDrawablesRelativeWithIntrinsicBounds(context.getDrawable(R.drawable.ic_collect2), null, null, null);
+                    } else {
+                        holder.collectedText.setCompoundDrawablesRelativeWithIntrinsicBounds(context.getDrawable(R.drawable.ic_collect1), null, null, null);
+                    }
                 }
             }
         });
@@ -166,24 +160,22 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         //评论
 
         //点赞
-        BmobQuery<Like> likeQuery = new BmobQuery<>();
-        likeQuery.addWhereEqualTo("post", new BmobPointer(queryPost));
-        likeQuery.addWhereEqualTo("user", new BmobPointer(currentUser));
-        likeQuery.findObjects(new FindListener<Like>() {
+        BmobQuery<User> likeQuery = new BmobQuery<>();
+        likeQuery.addWhereRelatedTo("like", new BmobPointer(queryPost));
+        likeQuery.findObjects(new FindListener<User>() {
             @Override
-            public void done(List<Like> list, BmobException e) {
-                if (list!=null && list.size()>0){
-                    //holder.thumbText.setCompoundDrawablesRelativeWithIntrinsicBounds(context.getDrawable(R.drawable.ic_thumb2), null, null, null);
-                    holder.thumbClick = true;
-                    holder.like = list.get(0);
-                }else {
-                    holder.thumbClick = false;
-                    holder.like = null;
-                }
-                if (holder.thumbClick){
-                    holder.thumbText.setCompoundDrawablesRelativeWithIntrinsicBounds(context.getDrawable(R.drawable.ic_thumb2), null, null, null);
-                }else {
-                    holder.thumbText.setCompoundDrawablesRelativeWithIntrinsicBounds(context.getDrawable(R.drawable.ic_thumb1), null, null, null);
+            public void done(List<User> list, BmobException e) {
+                if (list != null) {
+                    if (list.contains(currentUser)) {
+                        holder.thumbClick = true;
+                    } else {
+                        holder.thumbClick = false;
+                    }
+                    if (holder.thumbClick) {
+                        holder.thumbText.setCompoundDrawablesRelativeWithIntrinsicBounds(context.getDrawable(R.drawable.ic_thumb2), null, null, null);
+                    } else {
+                        holder.thumbText.setCompoundDrawablesRelativeWithIntrinsicBounds(context.getDrawable(R.drawable.ic_thumb1), null, null, null);
+                    }
                 }
             }
         });
@@ -215,42 +207,62 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                     holder.collectedTimes.setClickable(false);//先防止多次点击
                     if (holder.collectClick){
                         holder.collectedText.setCompoundDrawablesRelativeWithIntrinsicBounds(context.getDrawable(R.drawable.ic_collect1), null, null, null);
-                        holder.collect.delete(new UpdateListener() {
+                        BmobRelation relation = new BmobRelation();
+                        relation.remove(currentUser);
+                        post.setCollect(relation);
+                        post.update(new UpdateListener() {
                             @Override
                             public void done(BmobException e) {
-                                holder.collectClick = false;
-                                post.setCollect_num(post.getCollect_num()-1);
-                                post.update(new UpdateListener() {
-                                    @Override
-                                    public void done(BmobException e) {
-                                        String collectNum = post.getCollect_num()+"";
-                                        holder.collectedText.setText(collectNum);
-                                        holder.collectedTimes.setClickable(true);//解除多次点击防止
-                                    }
-                                });
+
+                            }
+                        });
+                        BmobRelation relation2 = new BmobRelation();
+                        relation2.remove(post);
+                        currentUser.setCollect(relation2);
+                        currentUser.update(new UpdateListener() {
+                            @Override
+                            public void done(BmobException e) {
+
+                            }
+                        });
+                        holder.collectClick = false;
+                        post.setCollect_num(post.getCollect_num()-1);
+                        post.update(new UpdateListener() {
+                            @Override
+                            public void done(BmobException e) {
+                                String collectNum = post.getCollect_num()+"";
+                                holder.collectedText.setText(collectNum);
+                                holder.collectedTimes.setClickable(true);//解除多次点击防止
                             }
                         });
                     }else {
                         holder.collectedText.setCompoundDrawablesRelativeWithIntrinsicBounds(context.getDrawable(R.drawable.ic_collect2), null, null, null);
-                        final Collect collect = new Collect();
-                        collect.setPost(post);
-                        collect.setUser(currentUser);
-                        collect.save(new SaveListener<String>() {
+                        BmobRelation relation = new BmobRelation();
+                        relation.add(currentUser);
+                        post.setCollect(relation);
+                        post.update(new UpdateListener() {
                             @Override
-                            public void done(String s, BmobException e) {
-                                if (e == null){
-                                    holder.collectClick = true;
-                                    post.setCollect_num(post.getCollect_num()+1);
-                                    post.update(new UpdateListener() {
-                                        @Override
-                                        public void done(BmobException e) {
-                                            String collectNum = post.getCollect_num()+"";
-                                            holder.collectedText.setText(collectNum);
-                                            holder.collectedTimes.setClickable(true);//解除多次点击防止
-                                        }
-                                    });
-                                    holder.collect = collect;
-                                }
+                            public void done(BmobException e) {
+
+                            }
+                        });
+                        BmobRelation relation2 = new BmobRelation();
+                        relation2.add(post);
+                        currentUser.setCollect(relation2);
+                        currentUser.update(new UpdateListener() {
+                            @Override
+                            public void done(BmobException e) {
+
+                            }
+                        });
+                        holder.collectClick = true;
+                        post.setCollect_num(post.getCollect_num()+1);
+                        post.update(new UpdateListener() {
+                            @Override
+                            public void done(BmobException e) {
+                                String collectNum = post.getCollect_num()+"";
+                                holder.collectedText.setText(collectNum);
+                                holder.collectedTimes.setClickable(true);//解除多次点击防止
                             }
                         });
                     }
@@ -262,42 +274,62 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                     holder.thumbTimes.setClickable(false);//先防止多次点击
                     if (holder.thumbClick){
                         holder.thumbText.setCompoundDrawablesRelativeWithIntrinsicBounds(context.getDrawable(R.drawable.ic_thumb1), null, null, null);
-                        holder.like.delete(new UpdateListener() {
+                        BmobRelation relation = new BmobRelation();
+                        relation.remove(currentUser);
+                        post.setLike(relation);
+                        post.update(new UpdateListener() {
                             @Override
                             public void done(BmobException e) {
-                                holder.thumbClick = false;
-                                post.setLiked_num(post.getLiked_num()-1);
-                                post.update(new UpdateListener() {
-                                    @Override
-                                    public void done(BmobException e) {
-                                        String thumbNum = post.getLiked_num()+"";
-                                        holder.thumbText.setText(thumbNum);
-                                        holder.thumbTimes.setClickable(true);//解除防止多次点击
-                                    }
-                                });
+
+                            }
+                        });
+                        BmobRelation relation2 = new BmobRelation();
+                        relation2.remove(post);
+                        currentUser.setLike(relation2);
+                        currentUser.update(new UpdateListener() {
+                            @Override
+                            public void done(BmobException e) {
+
+                            }
+                        });
+                        holder.thumbClick = false;
+                        post.setLiked_num(post.getLiked_num()-1);
+                        post.update(new UpdateListener() {
+                            @Override
+                            public void done(BmobException e) {
+                                String likeNum = post.getLiked_num()+"";
+                                holder.thumbText.setText(likeNum);
+                                holder.thumbTimes.setClickable(true);//解除多次点击防止
                             }
                         });
                     }else {
                         holder.thumbText.setCompoundDrawablesRelativeWithIntrinsicBounds(context.getDrawable(R.drawable.ic_thumb2), null, null, null);
-                        final Like like = new Like();
-                        like.setPost(post);
-                        like.setUser(currentUser);
-                        like.save(new SaveListener<String>() {
+                        BmobRelation relation = new BmobRelation();
+                        relation.add(currentUser);
+                        post.setLike(relation);
+                        post.update(new UpdateListener() {
                             @Override
-                            public void done(String s, BmobException e) {
-                                if (e == null){
-                                    holder.thumbClick = true;
-                                    post.setLiked_num(post.getLiked_num()+1);
-                                    post.update(new UpdateListener() {
-                                        @Override
-                                        public void done(BmobException e) {
-                                            String thumbNum = post.getLiked_num()+"";
-                                            holder.thumbText.setText(thumbNum);
-                                            holder.thumbTimes.setClickable(true);//解除防止多次点击
-                                        }
-                                    });
-                                    holder.like = like;
-                                }
+                            public void done(BmobException e) {
+
+                            }
+                        });
+                        BmobRelation relation2 = new BmobRelation();
+                        relation2.add(post);
+                        currentUser.setLike(relation2);
+                        currentUser.update(new UpdateListener() {
+                            @Override
+                            public void done(BmobException e) {
+
+                            }
+                        });
+                        holder.thumbClick = true;
+                        post.setLiked_num(post.getLiked_num()+1);
+                        post.update(new UpdateListener() {
+                            @Override
+                            public void done(BmobException e) {
+                                String likeNum = post.getLiked_num()+"";
+                                holder.thumbText.setText(likeNum);
+                                holder.thumbTimes.setClickable(true);//解除多次点击防止
                             }
                         });
                     }

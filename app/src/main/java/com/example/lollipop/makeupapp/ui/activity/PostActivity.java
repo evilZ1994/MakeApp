@@ -75,7 +75,6 @@ public class PostActivity extends BaseActivity {
     }
     @OnClick(R.id.post)
     void post(){
-        progressDialog.show();
         post = new Post();
         String text = inputText.getText().toString();
         String classification;
@@ -96,6 +95,7 @@ public class PostActivity extends BaseActivity {
             public void done(String s, BmobException e) {
                 if (e == null) {
                     Toast.makeText(getContext(), "发布成功", Toast.LENGTH_SHORT).show();
+                    setResult(Codes.COMMUNITY_POST_RESULT_OK);
                     AppManager.getInstance().finishActivity();
                 } else {
                     Toast.makeText(getContext(), "发布失败", Toast.LENGTH_SHORT).show();
@@ -112,6 +112,7 @@ public class PostActivity extends BaseActivity {
         if (paths.size()==0){
             post.save(saveListener);
         }else {
+            progressDialog.show();
             //上传图片
             final String[] files = new String[paths.size()];
             paths.toArray(files);

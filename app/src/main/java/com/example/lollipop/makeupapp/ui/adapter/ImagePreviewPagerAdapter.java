@@ -8,10 +8,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.lollipop.makeupapp.R;
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.interfaces.SimpleDraweeControllerBuilder;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
 import java.io.File;
 import java.util.List;
@@ -61,7 +66,7 @@ public class ImagePreviewPagerAdapter extends PagerAdapter {
         SimpleDraweeView image = new SimpleDraweeView(context);
         GenericDraweeHierarchyBuilder builder = new GenericDraweeHierarchyBuilder(context.getResources());
         GenericDraweeHierarchy hierarchy = builder.setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER).build();
-        hierarchy.setPlaceholderImage(context.getDrawable(R.drawable.ic_placeholder), ScalingUtils.ScaleType.FIT_CENTER);
+        hierarchy.setPlaceholderImage(context.getDrawable(R.drawable.cat), ScalingUtils.ScaleType.FIT_CENTER);
         Uri uri = null;
         if (tag.equals(TAG_LOCAL)){
             uri = Uri.fromFile(new File(paths.get(position)));

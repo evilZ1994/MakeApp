@@ -61,7 +61,7 @@ public class GridViewAdapter extends BaseAdapter{
         viewHolder.draweeView.setImageURI(images.get(position));
         GenericDraweeHierarchyBuilder builder = new GenericDraweeHierarchyBuilder(context.getResources());
         GenericDraweeHierarchy hierarchy = builder.setActualImageScaleType(ScalingUtils.ScaleType.CENTER_CROP).build();
-        hierarchy.setPlaceholderImage(context.getDrawable(R.drawable.ic_placeholder));
+        hierarchy.setPlaceholderImage(context.getDrawable(R.drawable.cat));
         viewHolder.draweeView.setHierarchy(hierarchy);
         if (listener != null){
             viewHolder.draweeView.setOnClickListener(new View.OnClickListener() {

@@ -45,7 +45,8 @@
         <activity
             android:name=".ui.activity.PostImageViewActivity"
             android:theme="@style/FullScreenTheme" />
-        <activity android:name=".ui.activity.ImageViewActivity"></activity>
+        <activity android:name=".ui.activity.ImageViewActivity" />
+        <activity android:name=".ui.activity.ScheduleAddActivity"></activity>
     </application>
 
 </manifest>

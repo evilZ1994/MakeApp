@@ -125,6 +125,7 @@ public class CommunityFragment extends BaseFragment {
         layoutManager2 = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager2);
         recyclerView.setAdapter(postAdapter);
+        refreshLayout.setColorSchemeResources(R.color.colorAccent);
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -268,6 +269,16 @@ public class CommunityFragment extends BaseFragment {
             Intent intent = new Intent(context, PostActivity.class);
             intent.putExtra("tag", tag);
             startActivityForResult(intent, Codes.COMMUNITY_POST_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == Codes.COMMUNITY_POST_REQUEST_CODE && resultCode == Codes.COMMUNITY_POST_RESULT_OK){
+            if (popupWindow.isShowing()){
+                popupWindow.dismiss();
+            }
+            pullPosts();
         }
     }
 }

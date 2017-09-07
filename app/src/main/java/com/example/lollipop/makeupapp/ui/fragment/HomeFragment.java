@@ -2,32 +2,27 @@ package com.example.lollipop.makeupapp.ui.fragment;
 
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.example.lollipop.makeupapp.R;
+import com.example.lollipop.makeupapp.bean.bmob.Post;
 import com.example.lollipop.makeupapp.bean.bmob.User;
 import com.example.lollipop.makeupapp.ui.activity.SettingActivity;
 import com.example.lollipop.makeupapp.ui.adapter.MyFragmentStatePagerAdapter;
 import com.example.lollipop.makeupapp.util.SdCardUtil;
-import com.example.lollipop.makeupapp.util.StatusBarUtils;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.io.File;
@@ -38,10 +33,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.datatype.BmobFile;
+import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.DownloadFileListener;
+import cn.bmob.v3.listener.FindListener;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -73,6 +67,14 @@ public class HomeFragment extends Fragment {
     AppCompatTextView locationText;
     @BindView(R.id.signature)
     AppCompatTextView signatureText;
+    @BindView(R.id.shared_times)
+    AppCompatTextView sharedTimesText;
+    @BindView(R.id.thumb_times)
+    AppCompatTextView thumbTimesText;
+    @BindView(R.id.commented_times)
+    AppCompatTextView commentedTimesText;
+    @BindView(R.id.collected_times)
+    AppCompatTextView collectedTimesText;
     @BindView(R.id.title)
     AppCompatTextView titleView;
     @BindView(R.id.setting)
@@ -118,12 +120,22 @@ public class HomeFragment extends Fragment {
 
         //初始TabLayout和ViewPager
         fragments = new ArrayList<>();
-        fragments.add(new ShareFragment());
-        fragments.add(new CollectFragment());
-        fragments.add(new MessageFragment());
+        ChildFragment childFragment1 = (ChildFragment) ChildFragment.newInstance();
+        Bundle bundle1 = new Bundle();
+        bundle1.putString("tag", "share");
+        childFragment1.setArguments(bundle1);
+        fragments.add(childFragment1);
+        ChildFragment childFragment2 = (ChildFragment) ChildFragment.newInstance();
+        Bundle bundle2 = new Bundle();
+        bundle2.putString("tag", "collect");
+        childFragment2.setArguments(bundle2);
+        fragments.add(childFragment2);
+        MessageFragment messageFragment = (MessageFragment) MessageFragment.newInstance();
+        fragments.add(messageFragment);
 
         MyFragmentStatePagerAdapter adapter = new MyFragmentStatePagerAdapter(getChildFragmentManager(), fragments, Arrays.asList(TITLES));
         viewPager.setAdapter(adapter);
+        viewPager.setOffscreenPageLimit(3);
 
         tabLayout.addTab(tabLayout.newTab().setText(TITLES[0]));
         tabLayout.addTab(tabLayout.newTab().setText(TITLES[0]));
@@ -143,6 +155,29 @@ public class HomeFragment extends Fragment {
         nickNameText.setText(currentUser.getUsername());
         locationText.setText(currentUser.getLocation());
         signatureText.setText(currentUser.getSignature());
+        //设置分享、被赞、被评论、被收藏数量
+        BmobQuery<Post> query = new BmobQuery<>();
+        query.addWhereEqualTo("author", currentUser);
+        query.findObjects(new FindListener<Post>() {
+            @Override
+            public void done(List<Post> list, BmobException e) {
+                //分享次数
+                sharedTimesText.setText(String.valueOf(list.size()));
+                if (list.size() > 0){
+                    int thumbTimes = 0;
+                    int commentedTimes = 0;
+                    int collectedTimes = 0;
+                    for (Post post : list){
+                        thumbTimes += post.getLiked_num();
+                        commentedTimes += post.getCommented_num();
+                        collectedTimes += post.getCollect_num();
+                    }
+                    thumbTimesText.setText(String.valueOf(thumbTimes));
+                    commentedTimesText.setText(String.valueOf(commentedTimes));
+                    collectedTimesText.setText(String.valueOf(collectedTimes));
+                }
+            }
+        });
     }
 
     @Override
