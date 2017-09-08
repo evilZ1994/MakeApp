@@ -96,4 +96,12 @@
     <string name="edit_content">编辑内容</string>
     <string name="edit_time">编辑时间</string>
     <string name="timer_start">起：</string>
+    <string name="repeat_mode">重复</string>
+    <string name="remind_way">提醒方式</string>
+    <string name="timer_stop">止：</string>
+    <string name="user_define">自定义</string>
+    <string name="schedule_example_1">面膜时间</string>
+    <string name="example_time_1">20:00-20:15</string>
+    <string name="everyday">每天</string>
+    <string name="ring">响铃</string>
 </resources>

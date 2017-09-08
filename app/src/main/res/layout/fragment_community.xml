@@ -29,13 +29,13 @@
             android:id="@+id/post"
             android:text="@string/post"
             android:clickable="true"
-            android:background="@drawable/ripple_white"
+            android:background="@drawable/ripple_circle_white"
             android:gravity="center"
             android:layout_gravity="end|center_vertical"
             android:layout_marginEnd="10dp"
             android:padding="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="?attr/actionBarSize" />
         </FrameLayout>
     </android.support.v7.widget.Toolbar>
 

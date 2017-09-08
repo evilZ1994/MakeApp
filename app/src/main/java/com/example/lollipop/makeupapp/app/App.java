@@ -13,6 +13,7 @@ import com.imnjh.imagepicker.PickerConfig;
 import com.imnjh.imagepicker.SImagePicker;
 
 import cn.bmob.v3.Bmob;
+import io.realm.Realm;
 
 /**
  * Created by Lollipop on 2017/8/12.
@@ -33,6 +34,11 @@ public class App extends Application {
         setupInjector();
         bmobInit();
         SImagePickerInit();
+        realmInit();
+    }
+
+    private void realmInit() {
+        Realm.init(context);
     }
 
     private void SImagePickerInit() {
