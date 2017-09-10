@@ -1,6 +1,7 @@
 package com.example.lollipop.makeupapp.bean.bmob;
 
 import cn.bmob.v3.BmobObject;
+import cn.bmob.v3.datatype.BmobDate;
 
 /**
  * Created by R2D2 on 2017/9/8.
@@ -15,6 +16,7 @@ public class Schedule extends BmobObject{
     private String repeatMode;
     private String remindWay;
     private boolean isOpen;
+    private BmobDate createTime;
 
     public User getUser() {
         return user;
@@ -78,5 +80,13 @@ public class Schedule extends BmobObject{
 
     public void setOpen(boolean open) {
         isOpen = open;
+    }
+
+    public BmobDate getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(BmobDate createTime) {
+        this.createTime = createTime;
     }
 }

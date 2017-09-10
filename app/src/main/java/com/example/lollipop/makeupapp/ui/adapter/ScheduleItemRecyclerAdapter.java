@@ -1,6 +1,7 @@
 package com.example.lollipop.makeupapp.ui.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
@@ -12,8 +13,13 @@ import android.widget.RelativeLayout;
 
 import com.example.lollipop.makeupapp.R;
 import com.example.lollipop.makeupapp.bean.realm.ScheduleRealm;
+import com.example.lollipop.makeupapp.ui.activity.ScheduleAddActivity;
+import com.example.lollipop.makeupapp.util.RealmToJson;
+import com.google.gson.Gson;
 
 import java.util.List;
+
+import io.realm.Realm;
 
 /**
  * Created by R2D2 on 2017/9/8.
@@ -23,6 +29,7 @@ public class ScheduleItemRecyclerAdapter extends RecyclerView.Adapter<ScheduleIt
     private Context context;
     private List<ScheduleRealm> scheduleRealms;
     LayoutInflater inflater;
+    OnItemClickListener onItemClickListener;
 
     public ScheduleItemRecyclerAdapter(Context context, List<ScheduleRealm> scheduleRealms){
         this.context = context;
@@ -42,12 +49,12 @@ public class ScheduleItemRecyclerAdapter extends RecyclerView.Adapter<ScheduleIt
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        ScheduleRealm scheduleRealm = scheduleRealms.get(position);
+    public void onBindViewHolder(ViewHolder holder, final int position) {
+        final ScheduleRealm scheduleRealm = scheduleRealms.get(position);
         String title = scheduleRealm.getTitle();
         String startTime = scheduleRealm.getStartTime();
         String endTime = scheduleRealm.getEndTime();
-        boolean isOpen = scheduleRealm.isOpen;
+        boolean isOpen = scheduleRealm.isOpen();
         String time = startTime+"-"+endTime;
         holder.titleView.setText(title);
         holder.timeView.setText(time);
@@ -56,16 +63,31 @@ public class ScheduleItemRecyclerAdapter extends RecyclerView.Adapter<ScheduleIt
         holder.switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
+                Realm realm = Realm.getDefaultInstance();
+                realm.beginTransaction();
+                scheduleRealm.setOpen(isChecked);
+                scheduleRealm.setNeedUpdate(true);
+                realm.commitTransaction();
             }
         });
         //计划项点击监听，弹出修改菜单
         holder.item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (onItemClickListener != null) {
+                    Intent intent = new Intent(context, ScheduleAddActivity.class);
+                    intent.putExtra("tag", "modify");
+                    intent.putExtra("classification", scheduleRealm.getClassification());
+                    String jsonStr = RealmToJson.scheduleToJson1(scheduleRealm);
+                    intent.putExtra("schedule", jsonStr);
+                    onItemClickListener.onItemClick(intent);
+                }
             }
         });
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener){
+        this.onItemClickListener = onItemClickListener;
     }
 
     @Override
@@ -84,5 +106,7 @@ public class ScheduleItemRecyclerAdapter extends RecyclerView.Adapter<ScheduleIt
         }
     }
 
-
+    public interface OnItemClickListener{
+        void onItemClick(Intent intent);
+    }
 }

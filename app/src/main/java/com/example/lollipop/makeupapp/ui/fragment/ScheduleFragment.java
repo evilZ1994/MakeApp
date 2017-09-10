@@ -3,17 +3,20 @@ package com.example.lollipop.makeupapp.ui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.lollipop.makeupapp.R;
 import com.example.lollipop.makeupapp.bean.bmob.User;
+import com.example.lollipop.makeupapp.bean.realm.ScheduleRealm;
 import com.example.lollipop.makeupapp.ui.activity.ScheduleAddActivity;
 import com.example.lollipop.makeupapp.ui.adapter.ClassificationInScheduleRecyclerAdapter;
 import com.example.lollipop.makeupapp.ui.adapter.ClassificationRecycleAdapter;
@@ -25,6 +28,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.realm.Realm;
+import io.realm.RealmQuery;
+import io.realm.RealmResults;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,6 +44,8 @@ public class ScheduleFragment extends Fragment implements ScheduleClassification
     private List<Integer> images;
     private List<String> titles;
     private List<ScheduleClassificationFragment> fragments;
+    private Realm realm;
+    private Integer pressedPosition;
 
     private int[] imgResources = {
             R.drawable.ic_bicycle, R.drawable.ic_mask,
@@ -59,7 +67,6 @@ public class ScheduleFragment extends Fragment implements ScheduleClassification
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -77,10 +84,14 @@ public class ScheduleFragment extends Fragment implements ScheduleClassification
         images = new ArrayList<>();
         titles = new ArrayList<>();
         numbers = new ArrayList<>();
+        realm = Realm.getDefaultInstance();
         for (int i = 0; i < classificationTexts.length; i++){
             images.add(imgResources[i]);
             titles.add(classificationTexts[i]);
-            numbers.add(i);
+            RealmQuery<ScheduleRealm> query = realm.where(ScheduleRealm.class);
+            query.equalTo("classification", classificationTexts[i]);
+            RealmResults<ScheduleRealm> results = query.findAll();
+            numbers.add(results.size());
         }
         classificationAdapter = new ClassificationInScheduleRecyclerAdapter(getContext(), images, titles, numbers);
         classificationAdapter.setOnItemClickListener(new ClassificationRecycleAdapter.OnItemClickListener() {
@@ -92,6 +103,9 @@ public class ScheduleFragment extends Fragment implements ScheduleClassification
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(classificationAdapter);
+        if (pressedPosition != null){
+            classificationAdapter.changeState(classificationAdapter.getViewHolder(pressedPosition));
+        }
 
         fragments = new ArrayList<>();
         for (int i=0; i<classificationTexts.length; i++){
@@ -122,5 +136,7 @@ public class ScheduleFragment extends Fragment implements ScheduleClassification
     @Override
     public void onItemNumChange(int position, int num) {
         //修改显示的数字
+        numbers.set(position, numbers.get(position)+num);
+        classificationAdapter.notifyDataSetChanged();
     }
 }

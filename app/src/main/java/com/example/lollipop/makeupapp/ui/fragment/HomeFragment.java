@@ -161,20 +161,22 @@ public class HomeFragment extends Fragment {
         query.findObjects(new FindListener<Post>() {
             @Override
             public void done(List<Post> list, BmobException e) {
-                //分享次数
-                sharedTimesText.setText(String.valueOf(list.size()));
-                if (list.size() > 0){
-                    int thumbTimes = 0;
-                    int commentedTimes = 0;
-                    int collectedTimes = 0;
-                    for (Post post : list){
-                        thumbTimes += post.getLiked_num();
-                        commentedTimes += post.getCommented_num();
-                        collectedTimes += post.getCollect_num();
+                if (e == null) {
+                    //分享次数
+                    sharedTimesText.setText(String.valueOf(list.size()));
+                    if (list.size() > 0) {
+                        int thumbTimes = 0;
+                        int commentedTimes = 0;
+                        int collectedTimes = 0;
+                        for (Post post : list) {
+                            thumbTimes += post.getLiked_num();
+                            commentedTimes += post.getCommented_num();
+                            collectedTimes += post.getCollect_num();
+                        }
+                        thumbTimesText.setText(String.valueOf(thumbTimes));
+                        commentedTimesText.setText(String.valueOf(commentedTimes));
+                        collectedTimesText.setText(String.valueOf(collectedTimes));
                     }
-                    thumbTimesText.setText(String.valueOf(thumbTimes));
-                    commentedTimesText.setText(String.valueOf(commentedTimes));
-                    collectedTimesText.setText(String.valueOf(collectedTimes));
                 }
             }
         });

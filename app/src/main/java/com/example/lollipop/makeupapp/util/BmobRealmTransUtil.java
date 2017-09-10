@@ -4,6 +4,10 @@ import com.example.lollipop.makeupapp.bean.bmob.Schedule;
 import com.example.lollipop.makeupapp.bean.bmob.User;
 import com.example.lollipop.makeupapp.bean.realm.ScheduleRealm;
 
+import java.util.Date;
+
+import cn.bmob.v3.datatype.BmobDate;
+
 /**
  * Created by R2D2 on 2017/9/8.
  */
@@ -21,6 +25,7 @@ public class BmobRealmTransUtil {
         scheduleRealm.setRepeatMode(schedule.getRepeatMode());
         scheduleRealm.setRemindWay(schedule.getRemindWay());
         scheduleRealm.setOpen(schedule.isOpen());
+        scheduleRealm.setCreateTime(DateFormatUtil.toDate(schedule.getCreateTime().getDate()));
 
         return scheduleRealm;
     }
@@ -37,6 +42,7 @@ public class BmobRealmTransUtil {
         schedule.setRepeatMode(scheduleRealm.getRepeatMode());
         schedule.setRemindWay(scheduleRealm.getRemindWay());
         schedule.setOpen(scheduleRealm.isOpen());
+        schedule.setCreateTime(new BmobDate(scheduleRealm.getCreateTime()));
         return schedule;
     }
 }

@@ -1,14 +1,14 @@
 package com.example.lollipop.makeupapp.bean.realm;
 
+import java.util.Date;
+
 import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by R2D2 on 2017/9/8.
  */
 
 public class ScheduleRealm extends RealmObject{
-    @PrimaryKey
     private String objectId;
     private String userId;
     public String title;
@@ -17,7 +17,10 @@ public class ScheduleRealm extends RealmObject{
     private String endTime;
     private String repeatMode;
     private String remindWay;
-    public boolean isOpen;
+    private boolean isOpen;
+    //是否需要更新到服务器
+    private boolean needUpdate;
+    private Date createTime;
 
     public String getObjectId() {
         return objectId;
@@ -89,5 +92,21 @@ public class ScheduleRealm extends RealmObject{
 
     public void setOpen(boolean open) {
         isOpen = open;
+    }
+
+    public boolean isNeedUpdate() {
+        return needUpdate;
+    }
+
+    public void setNeedUpdate(boolean needUpdate) {
+        this.needUpdate = needUpdate;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }

@@ -18,6 +18,7 @@ import com.example.lollipop.makeupapp.bean.bmob.User;
 import com.example.lollipop.makeupapp.bean.realm.ScheduleRealm;
 import com.example.lollipop.makeupapp.ui.activity.ScheduleAddActivity;
 import com.example.lollipop.makeupapp.ui.adapter.ScheduleItemRecyclerAdapter;
+import com.example.lollipop.makeupapp.util.Codes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +54,10 @@ public class ScheduleClassificationFragment extends Fragment {
     void addPlan(){
         //添加监听器控制item的更改
 
-        startActivity(new Intent(getContext(), ScheduleAddActivity.class));
+        Intent intent = new Intent(getContext(), ScheduleAddActivity.class);
+        intent.putExtra("tag", "insert");
+        intent.putExtra("classification", classification);
+        startActivityForResult(intent, Codes.SCHEDULE_ADD_REQUEST_CODE);
     }
 
     public ScheduleClassificationFragment() {
@@ -95,6 +99,7 @@ public class ScheduleClassificationFragment extends Fragment {
     private void initView() {
         scheduleRealms = new ArrayList<>();
         adapter = new ScheduleItemRecyclerAdapter(getContext(), scheduleRealms);
+        adapter.setOnItemClickListener(new OnScheduleItemClickListener());
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
@@ -113,6 +118,7 @@ public class ScheduleClassificationFragment extends Fragment {
         results.addChangeListener(new RealmChangeListener<RealmResults<ScheduleRealm>>() {
             @Override
             public void onChange(RealmResults<ScheduleRealm> results) {
+                scheduleRealms.clear();
                 scheduleRealms.addAll(results);
                 adapter.notifyDataSetChanged();
             }
@@ -137,5 +143,25 @@ public class ScheduleClassificationFragment extends Fragment {
     public void onStop() {
         super.onStop();
         results.removeAllChangeListeners();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Codes.SCHEDULE_ADD_REQUEST_CODE && resultCode == Codes.SCHEDULE_ADD_RESULT_OK){
+            readSchedules();
+            //新增一条计划
+            numChange(1);
+        }else if (requestCode == Codes.SCHEDULE_MODIFY_REQUEST_CODE && resultCode == Codes.SCHEDULE_MODIFY_RESULT_OK){
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    private class OnScheduleItemClickListener implements ScheduleItemRecyclerAdapter.OnItemClickListener{
+
+        @Override
+        public void onItemClick(Intent intent) {
+            startActivityForResult(intent, Codes.SCHEDULE_MODIFY_REQUEST_CODE);
+        }
     }
 }

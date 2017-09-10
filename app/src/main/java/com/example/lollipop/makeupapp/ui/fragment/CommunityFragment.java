@@ -155,7 +155,7 @@ public class CommunityFragment extends BaseFragment {
         }
         if (posts.size() > 0){
             //对比时间，查找最新动态
-            Date date = DateFormatUtil.format1(posts.get(0).getCreatedAt());
+            Date date = DateFormatUtil.toDate(posts.get(0).getCreatedAt());
             //服务器上时间精确到毫秒，加上1000ms会丢失这个一秒内的数据，但是不会重复加载
             date.setTime(date.getTime()+1000);
             query.addWhereGreaterThan("createdAt", new BmobDate(date));

@@ -9,9 +9,9 @@ import java.util.Date;
  */
 
 public class DateFormatUtil {
-    private static String format1 = "yyyy-MM-dd HH:mm:ss";
+    public static String format1 = "yyyy-MM-dd HH:mm:ss";
 
-    public static Date format1(String s){
+    public static Date toDate(String s){
         SimpleDateFormat dateFormat = new SimpleDateFormat(format1);
         try {
             return dateFormat.parse(s);
@@ -19,5 +19,10 @@ public class DateFormatUtil {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static String toStr(Date date){
+        SimpleDateFormat dateFormat = new SimpleDateFormat(format1);
+        return dateFormat.format(date);
     }
 }

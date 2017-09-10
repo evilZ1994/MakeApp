@@ -67,7 +67,6 @@
         android:layout_height="match_parent">
         <android.support.v7.widget.LinearLayoutCompat
             android:paddingBottom="50dp"
-
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -162,6 +161,7 @@
                         android:textColor="@color/dark"
                         android:text="@string/repeat_mode" />
                     <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/repeat_way_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
@@ -200,6 +200,7 @@
                         android:textColor="@color/dark"
                         android:text="@string/remind_way" />
                     <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/remind_way_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
