@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,7 +50,7 @@ public class ScheduleItemRecyclerAdapter extends RecyclerView.Adapter<ScheduleIt
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         final ScheduleRealm scheduleRealm = scheduleRealms.get(position);
         String title = scheduleRealm.getTitle();
         String startTime = scheduleRealm.getStartTime();
@@ -84,6 +85,14 @@ public class ScheduleItemRecyclerAdapter extends RecyclerView.Adapter<ScheduleIt
                 }
             }
         });
+        //长按删除
+        holder.item.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                onItemClickListener.onItemLongClick(holder.timeView, position);
+                return false;
+            }
+        });
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener){
@@ -108,5 +117,7 @@ public class ScheduleItemRecyclerAdapter extends RecyclerView.Adapter<ScheduleIt
 
     public interface OnItemClickListener{
         void onItemClick(Intent intent);
+
+        void onItemLongClick(View view, int position);
     }
 }

@@ -7,13 +7,16 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.example.lollipop.makeupapp.R;
+import com.example.lollipop.makeupapp.bean.bmob.Schedule;
 import com.example.lollipop.makeupapp.bean.bmob.User;
 import com.example.lollipop.makeupapp.bean.realm.ScheduleRealm;
 import com.example.lollipop.makeupapp.ui.activity.ScheduleAddActivity;
@@ -26,6 +29,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.UpdateListener;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmQuery;
@@ -162,6 +167,43 @@ public class ScheduleClassificationFragment extends Fragment {
         @Override
         public void onItemClick(Intent intent) {
             startActivityForResult(intent, Codes.SCHEDULE_MODIFY_REQUEST_CODE);
+        }
+
+        @Override
+        public void onItemLongClick(View view, final int position) {
+            //长按弹出删除选项
+            PopupMenu popupMenu = new PopupMenu(getContext(), view);
+            popupMenu.getMenuInflater().inflate(R.menu.popup_menu_delete, popupMenu.getMenu());
+
+            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    //删除操作
+                    realm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            ScheduleRealm scheduleRealm = scheduleRealms.remove(position);
+                            String objectId = scheduleRealm.getObjectId();
+                            scheduleRealm.deleteFromRealm();
+                            //从服务器删除
+                            if (objectId != null && objectId.length()>0) {
+                                Schedule schedule = new Schedule();
+                                schedule.setObjectId(objectId);
+                                schedule.delete(new UpdateListener() {
+                                    @Override
+                                    public void done(BmobException e) {
+
+                                    }
+                                });
+                            }
+                            numChange(-1);
+                            adapter.notifyDataSetChanged();
+                        }
+                    });
+                    return false;
+                }
+            });
+            popupMenu.show();
         }
     }
 }
