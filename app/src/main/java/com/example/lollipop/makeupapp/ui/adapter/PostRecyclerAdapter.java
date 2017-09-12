@@ -9,16 +9,25 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.example.lollipop.makeupapp.R;
 import com.example.lollipop.makeupapp.bean.bmob.Post;
 import com.example.lollipop.makeupapp.bean.bmob.User;
 import com.example.lollipop.makeupapp.ui.activity.ImageViewActivity;
+import com.example.lollipop.makeupapp.ui.activity.PostCheckActivity;
 import com.example.lollipop.makeupapp.ui.view.MyGridView;
+import com.example.lollipop.makeupapp.util.DateFormatUtil;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.drawee.generic.RoundingParams;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +63,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
+        LinearLayout item;
         SimpleDraweeView headImg;
         AppCompatTextView usernameText;
         AppCompatTextView postTimeText;
@@ -79,6 +89,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.item_post, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
+        viewHolder.item = (LinearLayout) view.findViewById(R.id.item);
         viewHolder.headImg = (SimpleDraweeView) view.findViewById(R.id.head_img);
         viewHolder.usernameText = (AppCompatTextView) view.findViewById(R.id.username);
         viewHolder.postTimeText = (AppCompatTextView) view.findViewById(R.id.post_time);
@@ -96,8 +107,15 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        Post post = posts.get(position);
-        User user = post.getAuthor();
+        final Post post = posts.get(position);
+        final User user = post.getAuthor();
+        //整体点击事件，即点击空白处查看详情
+        holder.item.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToPostCheckActivity(post, user);
+            }
+        });
         //基本信息配置
         GenericDraweeHierarchyBuilder builder = new GenericDraweeHierarchyBuilder(context.getResources());
         GenericDraweeHierarchy hierarchy = builder.setRoundingParams(RoundingParams.asCircle()).build();
@@ -124,6 +142,14 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                     intent.putStringArrayListExtra("paths", (ArrayList<String>)imageList);
                     intent.putExtra("position", position);
                     context.startActivity(intent);
+                }
+            });
+            holder.gridView.setOnTouchInvalidPositionListener(new MyGridView.OnTouchInvalidPositionListener() {
+                @Override
+                public boolean onTouchInvalidPosition(int motionEvent) {
+                    /*当返回false的时候代表交由父级控件处理，当return true的时候表示你已经处理了该事件并不让该事件再往上传递。为了触发listview的item点击就得返回false了*/
+                    goToPostCheckActivity(post, user);
+                    return false;
                 }
             });
         }else {
@@ -154,7 +180,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                 }
             }
         });
-        holder.collectedTimes.setOnClickListener(new OnItemClickListener(holder, "collect", post));
+        holder.collectedText.setOnClickListener(new OnItemClickListener(holder, "collect", post));
         String collectNum = post.getCollect_num()+"";
         holder.collectedText.setText(collectNum);
         //评论
@@ -179,9 +205,38 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                 }
             }
         });
-        holder.thumbTimes.setOnClickListener(new OnItemClickListener(holder, "thumb", post));
+        holder.thumbText.setOnClickListener(new OnItemClickListener(holder, "thumb", post));
         String thumbNum = post.getLiked_num()+"";
         holder.thumbText.setText(thumbNum);
+    }
+
+    private void goToPostCheckActivity(Post post, User user) {
+        Intent intent = new Intent(context, PostCheckActivity.class);
+        JSONObject jsonObject = new JSONObject();
+        try {
+            JSONArray imgArray = new JSONArray();
+            List<String> images = post.getImages();
+            if (images != null) {
+                for (String img : images) {
+                    imgArray.put(img);
+                }
+            }
+            jsonObject.put("objectId", post.getObjectId())
+                    .put("head_icon", user.getHead_icon().getFileUrl())
+                    .put("username", user.getUsername())
+                    .put("post_time", post.getCreatedAt())
+                    .put("content", post.getContent())
+                    .put("images", imgArray)
+                    .put("collect_num", post.getCollect_num())
+                    .put("comment_num", post.getCommented_num())
+                    .put("thumb_num", post.getLiked_num());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Log.i("json", jsonObject.toString());
+        intent.putExtra("json", jsonObject.toString());
+        Log.i("extra", intent.getStringExtra("json"));
+        context.startActivity(intent);
     }
 
     @Override
@@ -204,7 +259,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         public void onClick(View view) {
             switch (tag){
                 case "collect":
-                    holder.collectedTimes.setClickable(false);//先防止多次点击
+                    holder.collectedText.setClickable(false);//先防止多次点击
                     if (holder.collectClick){
                         holder.collectedText.setCompoundDrawablesRelativeWithIntrinsicBounds(context.getDrawable(R.drawable.ic_collect1), null, null, null);
                         BmobRelation relation = new BmobRelation();
@@ -226,13 +281,13 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                             }
                         });
                         holder.collectClick = false;
-                        post.setCollect_num(post.getCollect_num()-1);
+                        post.increment("collect_num", -1);
                         post.update(new UpdateListener() {
                             @Override
                             public void done(BmobException e) {
                                 String collectNum = post.getCollect_num()+"";
                                 holder.collectedText.setText(collectNum);
-                                holder.collectedTimes.setClickable(true);//解除多次点击防止
+                                holder.collectedText.setClickable(true);//解除多次点击防止
                             }
                         });
                     }else {
@@ -256,13 +311,13 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                             }
                         });
                         holder.collectClick = true;
-                        post.setCollect_num(post.getCollect_num()+1);
+                        post.increment("collect_num", 1);
                         post.update(new UpdateListener() {
                             @Override
                             public void done(BmobException e) {
                                 String collectNum = post.getCollect_num()+"";
                                 holder.collectedText.setText(collectNum);
-                                holder.collectedTimes.setClickable(true);//解除多次点击防止
+                                holder.collectedText.setClickable(true);//解除多次点击防止
                             }
                         });
                     }
@@ -271,7 +326,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
 
                     break;
                 case "thumb":
-                    holder.thumbTimes.setClickable(false);//先防止多次点击
+                    holder.thumbText.setClickable(false);//先防止多次点击
                     if (holder.thumbClick){
                         holder.thumbText.setCompoundDrawablesRelativeWithIntrinsicBounds(context.getDrawable(R.drawable.ic_thumb1), null, null, null);
                         BmobRelation relation = new BmobRelation();
@@ -293,13 +348,13 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                             }
                         });
                         holder.thumbClick = false;
-                        post.setLiked_num(post.getLiked_num()-1);
+                        post.increment("liked_num", -1);
                         post.update(new UpdateListener() {
                             @Override
                             public void done(BmobException e) {
                                 String likeNum = post.getLiked_num()+"";
                                 holder.thumbText.setText(likeNum);
-                                holder.thumbTimes.setClickable(true);//解除多次点击防止
+                                holder.thumbText.setClickable(true);//解除多次点击防止
                             }
                         });
                     }else {
@@ -323,13 +378,13 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                             }
                         });
                         holder.thumbClick = true;
-                        post.setLiked_num(post.getLiked_num()+1);
+                        post.increment("liked_num", 1);
                         post.update(new UpdateListener() {
                             @Override
                             public void done(BmobException e) {
                                 String likeNum = post.getLiked_num()+"";
                                 holder.thumbText.setText(likeNum);
-                                holder.thumbTimes.setClickable(true);//解除多次点击防止
+                                holder.thumbText.setClickable(true);//解除多次点击防止
                             }
                         });
                     }
