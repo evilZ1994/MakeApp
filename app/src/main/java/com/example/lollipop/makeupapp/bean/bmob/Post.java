@@ -16,11 +16,12 @@ public class Post extends BmobObject {
     private String content;
     private List<String> images;
     private String location;
-    private int scan_num;
-    private int commented_num;
+    private Integer scan_num;
+    private Integer commented_num;
     private BmobRelation collect;
-    private int collect_num;
+    private Integer collect_num;
     private BmobRelation like;
+    private Integer liked_num;
 
     public BmobRelation getCollect() {
         return collect;
@@ -37,8 +38,6 @@ public class Post extends BmobObject {
     public void setLike(BmobRelation like) {
         this.like = like;
     }
-
-    private int liked_num;
 
     public String getClassification() {
         return classification;
@@ -80,22 +79,6 @@ public class Post extends BmobObject {
         this.location = location;
     }
 
-    public int getScan_num() {
-        return scan_num;
-    }
-
-    public void setScan_num(int scan_num) {
-        this.scan_num = scan_num;
-    }
-
-    public int getCollect_num() {
-        return collect_num;
-    }
-
-    public void setCollect_num(int collect_num) {
-        this.collect_num = collect_num;
-    }
-
     public User getAuthor() {
         return author;
     }
@@ -104,19 +87,35 @@ public class Post extends BmobObject {
         this.author = author;
     }
 
-    public int getCommented_num() {
+    public Integer getScan_num() {
+        return scan_num;
+    }
+
+    public void setScan_num(Integer scan_num) {
+        this.scan_num = scan_num;
+    }
+
+    public Integer getCommented_num() {
         return commented_num;
     }
 
-    public void setCommented_num(int commented_num) {
+    public void setCommented_num(Integer commented_num) {
         this.commented_num = commented_num;
     }
 
-    public int getLiked_num() {
+    public Integer getCollect_num() {
+        return collect_num;
+    }
+
+    public void setCollect_num(Integer collect_num) {
+        this.collect_num = collect_num;
+    }
+
+    public Integer getLiked_num() {
         return liked_num;
     }
 
-    public void setLiked_num(int liked_num) {
+    public void setLiked_num(Integer liked_num) {
         this.liked_num = liked_num;
     }
 

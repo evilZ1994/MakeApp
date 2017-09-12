@@ -104,4 +104,5 @@
     <string name="example_time_1">20:00-20:15</string>
     <string name="everyday">每天</string>
     <string name="ring">响铃</string>
+    <string name="details">详情</string>
 </resources>
