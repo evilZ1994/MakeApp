@@ -1,5 +1,9 @@
 package com.example.lollipop.makeupapp.ui.activity;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -24,6 +28,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Observable;
 
 public class MainActivity extends BaseActivity {
     private List<Fragment> fragmentList = new ArrayList<>();
@@ -33,6 +38,9 @@ public class MainActivity extends BaseActivity {
     private CommunityFragment communityFragment;
     private HomeFragment homeFragment;
     private ScheduleFragment scheduleFragment;
+
+    private NotificationManager synchNotificationManager;
+    private Notification synchNotification;
 
     //点击返回键时的时间，用于控制双击退出
     private long mPressedTime = 0;
@@ -98,6 +106,18 @@ public class MainActivity extends BaseActivity {
 
             }
         });
+
+        //同步数据
+        synchData();
+    }
+
+    private void synchData() {
+        synchNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        synchNotification = new Notification.Builder(this)
+                .setSmallIcon(R.drawable.ic_cat)
+                .setWhen(System.currentTimeMillis())
+                .build();
+        
     }
 
     /**
