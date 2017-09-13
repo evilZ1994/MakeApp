@@ -17,14 +17,11 @@ import com.example.lollipop.makeupapp.ui.adapter.PostRecyclerAdapter;
 import com.example.lollipop.makeupapp.ui.base.BaseActivity;
 import com.example.lollipop.makeupapp.ui.view.MyGridView;
 import com.example.lollipop.makeupapp.util.DateFormatUtil;
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.drawee.generic.RoundingParams;
 import com.facebook.drawee.view.SimpleDraweeView;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,25 +33,28 @@ import cn.bmob.v3.datatype.BmobPointer;
 import cn.bmob.v3.datatype.BmobRelation;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.listener.QueryListener;
 import cn.bmob.v3.listener.UpdateListener;
+import rx.Observable;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class PostCheckActivity extends BaseActivity {
-    private Post post;
+    private Post mPost;
+    private User user;
     private Context context;
     private User currentUser;
 
-    private String headIconUri;
-    private String username;
-    private String postTime;
-    private String content;
     private List<String> images;
-    private int collectNum;
-    private int commentNum;
-    private int thumbNum;
 
     private boolean collectClick = false;
     private boolean commentClick = false;
     private boolean thumbClick = false;
+
+    private int collectNum;
+    private int commentNum;
+    private int thumbNum;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -81,48 +81,35 @@ public class PostCheckActivity extends BaseActivity {
         setContentView(R.layout.activity_check_post);
 
         ButterKnife.bind(this);
-        Intent intent = getIntent();
-        JSONObject jsonObject = new JSONObject();
-        try {
-            String jsonStr = intent.getStringExtra("json");
-            Log.i("intent", intent.hasExtra("json")+"");
-            jsonObject = new JSONObject(intent.getStringExtra("json"));
-            if (jsonObject.length() > 0) {
-                post = new Post();
-                post.setObjectId(jsonObject.getString("objectId"));
-                headIconUri = jsonObject.getString("head_icon");
-                username = jsonObject.getString("username");
-                postTime = jsonObject.getString("post_time");
-                content = jsonObject.getString("content");
-                JSONArray imgArray = jsonObject.getJSONArray("images");
-                images = new ArrayList<>();
-                for (int i=0; i<imgArray.length(); i++){
-                    images.add(imgArray.getString(i));
-                }
-                collectNum = jsonObject.getInt("collect_num");
-                commentNum = jsonObject.getInt("comment_num");
-                thumbNum = jsonObject.getInt("thumb_num");
-                context = this;
-                currentUser = User.getCurrentUser(User.class);
 
-                BmobQuery<Post> query = new BmobQuery<>();
-                query.addWhereEqualTo("objectId", jsonObject.getString("objectId"));
-                query.findObjects(new FindListener<Post>() {
+        context = this;
+        currentUser = User.getCurrentUser(User.class);
+
+        Intent intent = getIntent();
+        String objectId = intent.getStringExtra("objectId");
+        BmobQuery<Post> query = new BmobQuery<>();
+        query.include("author");
+        Observable<Post> observable = query.getObjectObservable(Post.class, objectId);
+        observable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Post>() {
                     @Override
-                    public void done(List<Post> list, BmobException e) {
-                        if (!list.isEmpty()) {
-                            post = list.get(0);
-                        }
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Post post) {
+                        mPost = post;
+                        user = mPost.getAuthor();
+                        initView();
                     }
                 });
-                initView();
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void initView() {
         toolbar.inflateMenu(R.menu.menu_menu);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,17 +117,21 @@ public class PostCheckActivity extends BaseActivity {
                 AppManager.getInstance().finishActivity();
             }
         });
-
-        //基本信息配置
-        GenericDraweeHierarchyBuilder builder = new GenericDraweeHierarchyBuilder(context.getResources());
+        GenericDraweeHierarchyBuilder builder = new GenericDraweeHierarchyBuilder(getResources());
         GenericDraweeHierarchy hierarchy = builder.setRoundingParams(RoundingParams.asCircle()).build();
-        headImg.setImageURI(headIconUri);
+        hierarchy.setPlaceholderImage(getDrawable(R.drawable.ic_head));
         headImg.setHierarchy(hierarchy);
-        usernameText.setText(username);
-        postTimeText.setText(postTime);
+    }
+
+    private void initView() {
+        //基本信息配置
+        headImg.setImageURI(user.getHead_icon().getFileUrl());
+        usernameText.setText(user.getUsername());
+        postTimeText.setText(mPost.getCreatedAt());
         //正文内容
-        contentText.setText(content);
+        contentText.setText(mPost.getContent());
         //grid view 配置
+        images = mPost.getImages();
         if (images != null && images.size() > 0) {
             List<String> imagesList = new ArrayList<>();
             for (String path : images) {
@@ -175,7 +166,7 @@ public class PostCheckActivity extends BaseActivity {
         }
         //收藏
         final Post queryPost = new Post();
-        queryPost.setObjectId(post.getObjectId());
+        queryPost.setObjectId(mPost.getObjectId());
         BmobQuery<User> collectQuery = new BmobQuery<>();
         collectQuery.addWhereRelatedTo("collect", new BmobPointer(queryPost));
         collectQuery.findObjects(new FindListener<User>() {
@@ -196,6 +187,7 @@ public class PostCheckActivity extends BaseActivity {
             }
         });
         collectedTimesText.setOnClickListener(new MyOnClickListener("collect"));
+        collectNum = mPost.getCollect_num();
         String collectNumStr = collectNum + "";
         collectedTimesText.setText(collectNumStr);
         //评论
@@ -221,6 +213,7 @@ public class PostCheckActivity extends BaseActivity {
             }
         });
         thumbTimesText.setOnClickListener(new MyOnClickListener("thumb"));
+        thumbNum = mPost.getLiked_num();
         String thumbNumStr = thumbNum + "";
         thumbTimesText.setText(thumbNumStr);
     }
@@ -241,15 +234,16 @@ public class PostCheckActivity extends BaseActivity {
                         collectedTimesText.setCompoundDrawablesRelativeWithIntrinsicBounds(context.getDrawable(R.drawable.ic_collect1), null, null, null);
                         BmobRelation relation = new BmobRelation();
                         relation.remove(currentUser);
-                        post.setCollect(relation);
-                        post.update(new UpdateListener() {
+                        mPost.setCollect(relation);
+                        mPost.increment("collect_num", -1);
+                        mPost.update(new UpdateListener() {
                             @Override
                             public void done(BmobException e) {
-
+                                collectedTimesText.setClickable(true);//解除多次点击防止
                             }
                         });
                         BmobRelation relation2 = new BmobRelation();
-                        relation2.remove(post);
+                        relation2.remove(mPost);
                         currentUser.setCollect(relation2);
                         currentUser.update(new UpdateListener() {
                             @Override
@@ -258,30 +252,23 @@ public class PostCheckActivity extends BaseActivity {
                             }
                         });
                         collectClick = false;
-                        post.increment("collect_num", -1);
-                        post.update(new UpdateListener() {
-                            @Override
-                            public void done(BmobException e) {
-                                collectNum = post.getCollect_num();
-                                Log.i("collect num", collectNum+"");
-                                String collectNumStr = collectNum + "";
-                                collectedTimesText.setText(collectNumStr);
-                                collectedTimesText.setClickable(true);//解除多次点击防止
-                            }
-                        });
+                        collectNum = collectNum - 1;
+                        String collectNumStr = collectNum + "";
+                        collectedTimesText.setText(collectNumStr);
                     } else {
                         collectedTimesText.setCompoundDrawablesRelativeWithIntrinsicBounds(context.getDrawable(R.drawable.ic_collect2), null, null, null);
                         BmobRelation relation = new BmobRelation();
                         relation.add(currentUser);
-                        post.setCollect(relation);
-                        post.update(new UpdateListener() {
+                        mPost.setCollect(relation);
+                        mPost.increment("collect_num", 1);
+                        mPost.update(new UpdateListener() {
                             @Override
                             public void done(BmobException e) {
-
+                                collectedTimesText.setClickable(true);//解除多次点击防止
                             }
                         });
                         BmobRelation relation2 = new BmobRelation();
-                        relation2.add(post);
+                        relation2.add(mPost);
                         currentUser.setCollect(relation2);
                         currentUser.update(new UpdateListener() {
                             @Override
@@ -290,17 +277,9 @@ public class PostCheckActivity extends BaseActivity {
                             }
                         });
                         collectClick = true;
-                        post.increment("collect_num", 1);
-                        post.update(new UpdateListener() {
-                            @Override
-                            public void done(BmobException e) {
-                                collectNum = post.getCollect_num();
-                                Log.i("collect num", collectNum+"");
-                                String collectNumStr = collectNum + "";
-                                collectedTimesText.setText(collectNumStr);
-                                collectedTimesText.setClickable(true);//解除多次点击防止
-                            }
-                        });
+                        collectNum = collectNum + 1;
+                        String collectNumStr = collectNum + "";
+                        collectedTimesText.setText(collectNumStr);
                     }
                     break;
                 case "comment":
@@ -312,15 +291,17 @@ public class PostCheckActivity extends BaseActivity {
                         thumbTimesText.setCompoundDrawablesRelativeWithIntrinsicBounds(context.getDrawable(R.drawable.ic_thumb1), null, null, null);
                         BmobRelation relation = new BmobRelation();
                         relation.remove(currentUser);
-                        post.setLike(relation);
-                        post.update(new UpdateListener() {
+                        mPost.setLike(relation);
+                        mPost.increment("liked_num", -1);
+                        mPost.update(new UpdateListener() {
                             @Override
                             public void done(BmobException e) {
-
+                                refreshPost();
+                                thumbTimesText.setClickable(true);//解除多次点击防止
                             }
                         });
                         BmobRelation relation2 = new BmobRelation();
-                        relation2.remove(post);
+                        relation2.remove(mPost);
                         currentUser.setLike(relation2);
                         currentUser.update(new UpdateListener() {
                             @Override
@@ -329,29 +310,24 @@ public class PostCheckActivity extends BaseActivity {
                             }
                         });
                         thumbClick = false;
-                        post.increment("liked_num", -1);
-                        post.update(new UpdateListener() {
-                            @Override
-                            public void done(BmobException e) {
-                                thumbNum = post.getLiked_num();
-                                String likeNumStr = thumbNum + "";
-                                thumbTimesText.setText(likeNumStr);
-                                thumbTimesText.setClickable(true);//解除多次点击防止
-                            }
-                        });
+                        thumbNum = thumbNum - 1;
+                        String likeNumStr = thumbNum + "";
+                        thumbTimesText.setText(likeNumStr);
                     } else {
                         thumbTimesText.setCompoundDrawablesRelativeWithIntrinsicBounds(context.getDrawable(R.drawable.ic_thumb2), null, null, null);
                         BmobRelation relation = new BmobRelation();
                         relation.add(currentUser);
-                        post.setLike(relation);
-                        post.update(new UpdateListener() {
+                        mPost.setLike(relation);
+                        mPost.increment("liked_num", 1);
+                        mPost.update(new UpdateListener() {
                             @Override
                             public void done(BmobException e) {
-
+                                refreshPost();
+                                thumbTimesText.setClickable(true);//解除多次点击防止
                             }
                         });
                         BmobRelation relation2 = new BmobRelation();
-                        relation2.add(post);
+                        relation2.add(mPost);
                         currentUser.setLike(relation2);
                         currentUser.update(new UpdateListener() {
                             @Override
@@ -360,19 +336,21 @@ public class PostCheckActivity extends BaseActivity {
                             }
                         });
                         thumbClick = true;
-                        post.increment("liked_num", 1);
-                        post.update(new UpdateListener() {
-                            @Override
-                            public void done(BmobException e) {
-                                thumbNum = post.getLiked_num();
-                                String likeNumStr = thumbNum + "";
-                                thumbTimesText.setText(likeNumStr);
-                                thumbTimesText.setClickable(true);//解除多次点击防止
-                            }
-                        });
+                        thumbNum = thumbNum + 1;
+                        String likeNumStr = thumbNum + "";
+                        thumbTimesText.setText(likeNumStr);
                     }
                     break;
             }
         }
+    }
+
+    private void refreshPost() {
+       new BmobQuery<Post>().getObject(mPost.getObjectId(), new QueryListener<Post>() {
+            @Override
+            public void done(Post post, BmobException e) {
+                mPost = post;
+            }
+        });
     }
 }

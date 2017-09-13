@@ -140,7 +140,7 @@ public class CommunityFragment extends BaseFragment {
         //查询帖子和用户
         BmobQuery<Post> query = new BmobQuery<Post>();
         query.include("author");//将作者信息也一起查询出来
-        if (!classification.equals("none")){
+        /*if (!classification.equals("none")){
             //根据分类查找
             query.addWhereEqualTo("classification", classification);
             //移除posts里其它标签的内容
@@ -164,17 +164,40 @@ public class CommunityFragment extends BaseFragment {
             @Override
             public void done(List<Post> list, BmobException e) {
                 if (e == null) {
+                    int oldSize = posts.size();
                     if (list.size()>0) {
                         for (Post post : list){
                             posts.add(0, post);
                         }
                     }
                     postAdapter.setPosts(posts);
-                    Toast.makeText(getContext(), "更新了"+list.size()+"条动态", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "更新了"+(list.size()-oldSize)+"条动态", Toast.LENGTH_SHORT).show();
                 }else {
                     Toast.makeText(getContext(), "更新失败", Toast.LENGTH_SHORT).show();
                 }
-
+                //取消刷新
+                if (refreshLayout.isRefreshing()){
+                    refreshLayout.setRefreshing(false);
+                }
+            }
+        });*/
+        if (!classification.equals("none")){
+            query.addWhereEqualTo("classification", classification);
+        }
+        query.findObjects(new FindListener<Post>() {
+            @Override
+            public void done(List<Post> list, BmobException e) {
+                if (e == null) {
+                    int oldSize = posts.size();
+                    posts.clear();
+                    for (Post post : list){
+                        posts.add(0, post);
+                    }
+                    postAdapter.setPosts(posts);
+                    Toast.makeText(getContext(), "更新了"+(list.size()-oldSize)+"条动态", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(getContext(), "更新失败", Toast.LENGTH_SHORT).show();
+                }
                 //取消刷新
                 if (refreshLayout.isRefreshing()){
                     refreshLayout.setRefreshing(false);
@@ -280,5 +303,11 @@ public class CommunityFragment extends BaseFragment {
             }
             pullPosts();
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        pullPosts();
     }
 }

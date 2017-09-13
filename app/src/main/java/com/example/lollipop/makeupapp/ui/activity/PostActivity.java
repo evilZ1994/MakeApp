@@ -90,6 +90,10 @@ public class PostActivity extends BaseActivity {
         post.setContent(content);
         post.setAuthor(currentUser);
         post.setAuthority(mAuthority);
+        post.setCollect_num(0);
+        post.setCommented_num(0);
+        post.setLiked_num(0);
+        post.setScan_num(0);
         final SaveListener saveListener = new SaveListener<String>() {
             @Override
             public void done(String s, BmobException e) {
