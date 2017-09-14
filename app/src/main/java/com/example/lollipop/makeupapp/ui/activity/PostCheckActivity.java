@@ -16,6 +16,7 @@ import com.example.lollipop.makeupapp.ui.adapter.GridViewAdapter;
 import com.example.lollipop.makeupapp.ui.adapter.PostRecyclerAdapter;
 import com.example.lollipop.makeupapp.ui.base.BaseActivity;
 import com.example.lollipop.makeupapp.ui.view.MyGridView;
+import com.example.lollipop.makeupapp.util.Codes;
 import com.example.lollipop.makeupapp.util.DateFormatUtil;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
@@ -227,6 +228,8 @@ public class PostCheckActivity extends BaseActivity {
 
         @Override
         public void onClick(View v) {
+            //当被点击后，提醒更新
+            setResult(Codes.COMMUNITY_CHECK_POST_RESULT_OK);
             switch (tag) {
                 case "collect":
                     collectedTimesText.setClickable(false);//先防止多次点击

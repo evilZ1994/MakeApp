@@ -117,11 +117,20 @@ public class CommunityFragment extends BaseFragment {
 
         titleText.setText(currentUser.getUsername());
 
+        //进入直接加载数据
+        refreshLayout.setRefreshing(true);
+        pullPosts();
     }
 
     private void initPostList(){
         posts = new ArrayList<>();
         postAdapter = new PostRecyclerAdapter(getContext(), posts);
+        postAdapter.setOnBlankClickListener(new PostRecyclerAdapter.OnBlankClickListener() {
+            @Override
+            public void OnBlankClick(Intent intent) {
+                startActivityForResult(intent, Codes.COMMUNITY_CHECK_POST_REQUEST_CODE);
+            }
+        });
         layoutManager2 = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager2);
         recyclerView.setAdapter(postAdapter);
@@ -302,12 +311,8 @@ public class CommunityFragment extends BaseFragment {
                 popupWindow.dismiss();
             }
             pullPosts();
+        }else if (requestCode == Codes.COMMUNITY_CHECK_POST_REQUEST_CODE && resultCode == Codes.COMMUNITY_CHECK_POST_RESULT_OK){
+            pullPosts();
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        pullPosts();
     }
 }

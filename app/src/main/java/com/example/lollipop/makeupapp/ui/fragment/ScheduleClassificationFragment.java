@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import com.example.lollipop.makeupapp.R;
 import com.example.lollipop.makeupapp.bean.bmob.Schedule;
 import com.example.lollipop.makeupapp.bean.bmob.User;
+import com.example.lollipop.makeupapp.bean.realm.ScheduleDelete;
 import com.example.lollipop.makeupapp.bean.realm.ScheduleRealm;
 import com.example.lollipop.makeupapp.ui.activity.ScheduleAddActivity;
 import com.example.lollipop.makeupapp.ui.adapter.ScheduleItemRecyclerAdapter;
@@ -179,27 +180,33 @@ public class ScheduleClassificationFragment extends Fragment {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
                     //删除操作
-                    realm.executeTransaction(new Realm.Transaction() {
-                        @Override
-                        public void execute(Realm realm) {
-                            ScheduleRealm scheduleRealm = scheduleRealms.remove(position);
-                            String objectId = scheduleRealm.getObjectId();
-                            scheduleRealm.deleteFromRealm();
-                            //从服务器删除
-                            if (objectId != null && objectId.length()>0) {
-                                Schedule schedule = new Schedule();
-                                schedule.setObjectId(objectId);
-                                schedule.delete(new UpdateListener() {
-                                    @Override
-                                    public void done(BmobException e) {
-
-                                    }
-                                });
+                    realm.beginTransaction();
+                    ScheduleRealm scheduleRealm = scheduleRealms.remove(position);
+                    ScheduleDelete scheduleDelete = new ScheduleDelete();
+                    String objectId = scheduleRealm.getObjectId();
+                    String userId = scheduleRealm.getUserId();
+                    scheduleRealm.deleteFromRealm();
+                    scheduleDelete.setObjectId(objectId);
+                    scheduleDelete.setUserId(userId);
+                    final ScheduleDelete delete = realm.copyToRealm(scheduleDelete);
+                    realm.commitTransaction();
+                    //从服务器删除
+                    if (objectId != null && objectId.length()>0) {
+                        Schedule schedule = new Schedule();
+                        schedule.setObjectId(objectId);
+                        schedule.delete(new UpdateListener() {
+                            @Override
+                            public void done(BmobException e) {
+                                if (e == null) {
+                                    realm.beginTransaction();
+                                    delete.deleteFromRealm();
+                                    realm.commitTransaction();
+                                }
                             }
-                            numChange(-1);
-                            adapter.notifyDataSetChanged();
-                        }
-                    });
+                        });
+                    }
+                    numChange(-1);
+                    adapter.notifyDataSetChanged();
                     return false;
                 }
             });

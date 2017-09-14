@@ -1,5 +1,6 @@
 package com.example.lollipop.makeupapp.ui.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.AppCompatTextView;
@@ -17,6 +18,7 @@ import com.example.lollipop.makeupapp.bean.bmob.User;
 import com.example.lollipop.makeupapp.ui.activity.ImageViewActivity;
 import com.example.lollipop.makeupapp.ui.activity.PostCheckActivity;
 import com.example.lollipop.makeupapp.ui.view.MyGridView;
+import com.example.lollipop.makeupapp.util.Codes;
 import com.example.lollipop.makeupapp.util.DateFormatUtil;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
@@ -49,6 +51,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
     private List<Post> posts;
     private LayoutInflater inflater;
     private User currentUser;
+    private OnBlankClickListener onBlankClickListener;
 
     public PostRecyclerAdapter(Context context, List<Post> posts){
         this.context = context;
@@ -116,7 +119,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         holder.item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToPostCheckActivity(post, user);
+                goToPostCheckActivity(post);
             }
         });
         //基本信息配置
@@ -151,7 +154,7 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                 @Override
                 public boolean onTouchInvalidPosition(int motionEvent) {
                     /*当返回false的时候代表交由父级控件处理，当return true的时候表示你已经处理了该事件并不让该事件再往上传递。为了触发listview的item点击就得返回false了*/
-                    goToPostCheckActivity(post, user);
+                    goToPostCheckActivity(post);
                     return false;
                 }
             });
@@ -215,10 +218,15 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
         holder.thumbText.setText(thumbNumStr);
     }
 
-    private void goToPostCheckActivity(Post post, User user) {
+    private void goToPostCheckActivity(Post post) {
         Intent intent = new Intent(context, PostCheckActivity.class);
         intent.putExtra("objectId", post.getObjectId());
-        context.startActivity(intent);
+
+        onBlankClickListener.OnBlankClick(intent);
+    }
+
+    public void setOnBlankClickListener(OnBlankClickListener listener){
+        this.onBlankClickListener = listener;
     }
 
     @Override
@@ -353,5 +361,9 @@ public class PostRecyclerAdapter extends RecyclerView.Adapter<PostRecyclerAdapte
                     break;
             }
         }
+    }
+
+    public interface OnBlankClickListener{
+        void OnBlankClick(Intent intent);
     }
 }

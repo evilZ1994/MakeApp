@@ -23,8 +23,9 @@ public class ClassificationInScheduleRecyclerAdapter extends RecyclerView.Adapte
     private List<String> titles;
     private List<Integer> numbers;
     private LayoutInflater inflater;
-    private List<ViewHolder> holders;
     private ClassificationRecycleAdapter.OnItemClickListener onItemClickListener;
+    private List<Boolean> pressStates;
+    private int pressPosition;
 
     private ClassificationInScheduleRecyclerAdapter.ViewHolder viewHolder;
 
@@ -33,7 +34,15 @@ public class ClassificationInScheduleRecyclerAdapter extends RecyclerView.Adapte
         this.titles = titles;
         this.numbers = numbers;
         this.inflater = LayoutInflater.from(context);
-        holders = new ArrayList<>();
+        pressPosition = 0;
+        pressStates = new ArrayList<>();
+        for (int i=0; i<titles.size(); i++){
+            if (i==0){
+                pressStates.add(true);
+            }else {
+                pressStates.add(false);
+            }
+        }
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -66,7 +75,7 @@ public class ClassificationInScheduleRecyclerAdapter extends RecyclerView.Adapte
         viewHolder.imageView = (AppCompatImageView) view.findViewById(R.id.img);
         viewHolder.titleView = (AppCompatTextView) view.findViewById(R.id.title);
         viewHolder.numView = (AppCompatTextView) view.findViewById(R.id.num);
-        holders.add(viewHolder);
+
         return viewHolder;
     }
 
@@ -74,6 +83,7 @@ public class ClassificationInScheduleRecyclerAdapter extends RecyclerView.Adapte
     public void onBindViewHolder(final ClassificationInScheduleRecyclerAdapter.ViewHolder holder, final int position) {
         holder.imageView.setImageResource(images.get(position));
         holder.titleView.setText(titles.get(position));
+        holder.itemLayout.setPressed(pressStates.get(position));
         int num = numbers.get(position);
         if (num > 0){
             holder.numView.setText(String.valueOf(num));
@@ -86,7 +96,7 @@ public class ClassificationInScheduleRecyclerAdapter extends RecyclerView.Adapte
                 @Override
                 public void onClick(View view) {
                     onItemClickListener.onItemClick(view, position);
-                    changeState(holder);
+                    changeState(position);
                 }
             });
         }
@@ -97,15 +107,10 @@ public class ClassificationInScheduleRecyclerAdapter extends RecyclerView.Adapte
         return titles.size();
     }
 
-    public void changeState(ViewHolder holder){
-        if (viewHolder != null) {
-            viewHolder.itemLayout.setPressed(false);
-        }
-        viewHolder = holder;
-        viewHolder.itemLayout.setPressed(true);
-    }
-
-    public ViewHolder getViewHolder(int position){
-        return holders.get(position);
+    public void changeState(int position){
+        pressStates.set(pressPosition, false);
+        pressStates.set(position, true);
+        pressPosition = position;
+        notifyDataSetChanged();
     }
 }

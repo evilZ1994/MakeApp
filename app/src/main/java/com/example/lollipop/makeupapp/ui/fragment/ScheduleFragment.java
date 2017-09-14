@@ -29,13 +29,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.realm.Realm;
+import io.realm.RealmChangeListener;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ScheduleFragment extends Fragment implements ScheduleClassificationFragment.OnItemNumChangeListener{
+public class ScheduleFragment extends Fragment implements ScheduleClassificationFragment.OnItemNumChangeListener {
 
     private User currentUser;
     private ClassificationInScheduleRecyclerAdapter classificationAdapter;
@@ -85,14 +86,16 @@ public class ScheduleFragment extends Fragment implements ScheduleClassification
         titles = new ArrayList<>();
         numbers = new ArrayList<>();
         realm = Realm.getDefaultInstance();
-        for (int i = 0; i < classificationTexts.length; i++){
+        for (int i = 0; i < classificationTexts.length; i++) {
             images.add(imgResources[i]);
             titles.add(classificationTexts[i]);
             RealmQuery<ScheduleRealm> query = realm.where(ScheduleRealm.class);
+            query.equalTo("userId", currentUser.getObjectId());
             query.equalTo("classification", classificationTexts[i]);
             RealmResults<ScheduleRealm> results = query.findAll();
             numbers.add(results.size());
         }
+
         classificationAdapter = new ClassificationInScheduleRecyclerAdapter(getContext(), images, titles, numbers);
         classificationAdapter.setOnItemClickListener(new ClassificationRecycleAdapter.OnItemClickListener() {
             @Override
@@ -103,12 +106,9 @@ public class ScheduleFragment extends Fragment implements ScheduleClassification
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(classificationAdapter);
-        if (pressedPosition != null){
-            classificationAdapter.changeState(classificationAdapter.getViewHolder(pressedPosition));
-        }
 
         fragments = new ArrayList<>();
-        for (int i=0; i<classificationTexts.length; i++){
+        for (int i = 0; i < classificationTexts.length; i++) {
             ScheduleClassificationFragment fragment = ScheduleClassificationFragment.newInstance(classificationTexts[i], i);
             fragment.setOnItemNumChangeListener(this);
             fragments.add(fragment);
@@ -123,7 +123,7 @@ public class ScheduleFragment extends Fragment implements ScheduleClassification
 
             @Override
             public void onPageSelected(int position) {
-                classificationAdapter.changeState(classificationAdapter.getViewHolder(position));
+                classificationAdapter.changeState(position);
             }
 
             @Override
@@ -136,7 +136,19 @@ public class ScheduleFragment extends Fragment implements ScheduleClassification
     @Override
     public void onItemNumChange(int position, int num) {
         //修改显示的数字
-        numbers.set(position, numbers.get(position)+num);
+        numbers.set(position, numbers.get(position) + num);
+        classificationAdapter.notifyDataSetChanged();
+    }
+
+    public void notifyItemNumChange() {
+        numbers.clear();
+        for (int i = 0; i < classificationTexts.length; i++) {
+            RealmQuery<ScheduleRealm> query = realm.where(ScheduleRealm.class);
+            query.equalTo("userId", currentUser.getObjectId());
+            query.equalTo("classification", classificationTexts[i]);
+            RealmResults<ScheduleRealm> results = query.findAll();
+            numbers.add(results.size());
+        }
         classificationAdapter.notifyDataSetChanged();
     }
 }
