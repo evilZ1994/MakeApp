@@ -18,6 +18,7 @@ public class ScheduleRealm extends RealmObject{
     private String repeatMode;
     private String remindWay;
     private boolean isOpen;
+    private int requestCode;
     //是否需要更新到服务器
     private boolean needUpdate;
     private Date createTime;
@@ -92,6 +93,14 @@ public class ScheduleRealm extends RealmObject{
 
     public void setOpen(boolean open) {
         isOpen = open;
+    }
+
+    public int getRequestCode() {
+        return requestCode;
+    }
+
+    public void setRequestCode(int requestCode) {
+        this.requestCode = requestCode;
     }
 
     public boolean isNeedUpdate() {

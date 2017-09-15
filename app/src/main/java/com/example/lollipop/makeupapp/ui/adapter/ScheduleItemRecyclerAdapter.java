@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import com.example.lollipop.makeupapp.R;
 import com.example.lollipop.makeupapp.bean.realm.ScheduleRealm;
 import com.example.lollipop.makeupapp.ui.activity.ScheduleAddActivity;
+import com.example.lollipop.makeupapp.util.AlarmUtil;
 import com.example.lollipop.makeupapp.util.RealmToJson;
 import com.google.gson.Gson;
 
@@ -64,6 +65,11 @@ public class ScheduleItemRecyclerAdapter extends RecyclerView.Adapter<ScheduleIt
         holder.switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    AlarmUtil.openAlarm(context, scheduleRealm);
+                }else {
+                    AlarmUtil.closeAlarm(context, scheduleRealm.getRequestCode());
+                }
                 Realm realm = Realm.getDefaultInstance();
                 realm.beginTransaction();
                 scheduleRealm.setOpen(isChecked);

@@ -16,6 +16,7 @@ public class Schedule extends BmobObject{
     private String repeatMode;
     private String remindWay;
     private boolean isOpen;
+    private Integer requestCode;
     private BmobDate createTime;
 
     public User getUser() {
@@ -80,6 +81,14 @@ public class Schedule extends BmobObject{
 
     public void setOpen(boolean open) {
         isOpen = open;
+    }
+
+    public Integer getRequestCode() {
+        return requestCode;
+    }
+
+    public void setRequestCode(Integer requestCode) {
+        this.requestCode = requestCode;
     }
 
     public BmobDate getCreateTime() {

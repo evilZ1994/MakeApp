@@ -25,6 +25,7 @@ public class BmobRealmTransUtil {
         scheduleRealm.setRepeatMode(schedule.getRepeatMode());
         scheduleRealm.setRemindWay(schedule.getRemindWay());
         scheduleRealm.setOpen(schedule.isOpen());
+        scheduleRealm.setRequestCode(schedule.getRequestCode());
         scheduleRealm.setCreateTime(DateFormatUtil.toDate(schedule.getCreateTime().getDate()));
 
         return scheduleRealm;
@@ -42,6 +43,7 @@ public class BmobRealmTransUtil {
         schedule.setRepeatMode(scheduleRealm.getRepeatMode());
         schedule.setRemindWay(scheduleRealm.getRemindWay());
         schedule.setOpen(scheduleRealm.isOpen());
+        schedule.setRequestCode(scheduleRealm.getRequestCode());
         schedule.setCreateTime(new BmobDate(scheduleRealm.getCreateTime()));
         return schedule;
     }

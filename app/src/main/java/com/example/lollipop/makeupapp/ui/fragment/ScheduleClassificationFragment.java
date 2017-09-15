@@ -22,6 +22,7 @@ import com.example.lollipop.makeupapp.bean.realm.ScheduleDelete;
 import com.example.lollipop.makeupapp.bean.realm.ScheduleRealm;
 import com.example.lollipop.makeupapp.ui.activity.ScheduleAddActivity;
 import com.example.lollipop.makeupapp.ui.adapter.ScheduleItemRecyclerAdapter;
+import com.example.lollipop.makeupapp.util.AlarmUtil;
 import com.example.lollipop.makeupapp.util.Codes;
 
 import java.util.ArrayList;
@@ -179,9 +180,14 @@ public class ScheduleClassificationFragment extends Fragment {
             popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
+
                     //删除操作
                     realm.beginTransaction();
                     ScheduleRealm scheduleRealm = scheduleRealms.remove(position);
+                    //关闭闹钟
+                    if (scheduleRealm.isOpen()){
+                        AlarmUtil.closeAlarm(getContext(), scheduleRealm.getRequestCode());
+                    }
                     ScheduleDelete scheduleDelete = new ScheduleDelete();
                     String objectId = scheduleRealm.getObjectId();
                     String userId = scheduleRealm.getUserId();

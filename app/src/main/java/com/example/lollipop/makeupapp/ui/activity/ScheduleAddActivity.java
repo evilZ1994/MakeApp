@@ -19,6 +19,7 @@ import com.example.lollipop.makeupapp.bean.bmob.Schedule;
 import com.example.lollipop.makeupapp.bean.bmob.User;
 import com.example.lollipop.makeupapp.bean.realm.ScheduleRealm;
 import com.example.lollipop.makeupapp.ui.base.BaseActivity;
+import com.example.lollipop.makeupapp.util.AlarmUtil;
 import com.example.lollipop.makeupapp.util.BmobRealmTransUtil;
 import com.example.lollipop.makeupapp.util.Codes;
 import com.example.lollipop.makeupapp.util.DateFormatUtil;
@@ -39,6 +40,7 @@ import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
 import io.realm.Realm;
 import io.realm.RealmQuery;
+import io.realm.RealmResults;
 
 public class ScheduleAddActivity extends BaseActivity {
     private User currentUser;
@@ -57,7 +59,7 @@ public class ScheduleAddActivity extends BaseActivity {
     private ArrayAdapter<String> repeatAdapter;
     private ArrayAdapter<String> remindAdapter;
     private String[] repeatWays = {
-            "每天", "仅一次", "周一至周五", "自定义"
+            "仅一次", "每天", "自定义"
     };
     private String[] remindWays = {
             "响铃", "振动", "响铃+振动"
@@ -84,6 +86,7 @@ public class ScheduleAddActivity extends BaseActivity {
     @OnClick(R.id.finish)
     void done(){
         progressDialog.show();
+
         //先保存到服务器，得到objectId后再保存到本地
         title = contentEdit.getText().toString();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -96,6 +99,12 @@ public class ScheduleAddActivity extends BaseActivity {
 
         if (!tag.equals("modify")){
             //添加数据
+            //查找现有的计划表，将计划表的数量作为requestCode
+            RealmQuery<ScheduleRealm> query = realm.where(ScheduleRealm.class);
+            query.equalTo("userId", currentUser.getObjectId());
+            RealmResults<ScheduleRealm> results = query.findAll();
+            int requestCode = results.size();
+
             scheduleRealm.setTitle(title);
             scheduleRealm.setStartTime(startTime);
             scheduleRealm.setEndTime(endTime);
@@ -104,7 +113,8 @@ public class ScheduleAddActivity extends BaseActivity {
             scheduleRealm.setClassification(classification);
             scheduleRealm.setUserId(currentUser.getObjectId());
             scheduleRealm.setOpen(true);
-            scheduleRealm.setCreateTime(new Date(System.currentTimeMillis()));
+            scheduleRealm.setRequestCode(requestCode);
+            scheduleRealm.setCreateTime(DateFormatUtil.toDate(DateFormatUtil.toStr(new Date(System.currentTimeMillis()))));
             //保存到服务器
             Schedule schedule = BmobRealmTransUtil.schedule(scheduleRealm);
             schedule.save(new SaveListener<String>() {
@@ -126,6 +136,9 @@ public class ScheduleAddActivity extends BaseActivity {
                     if (progressDialog.isShowing()){
                         progressDialog.dismiss();
                     }
+                    //开启闹钟
+                    AlarmUtil.openAlarm(ScheduleAddActivity.this, scheduleRealm);
+
                     setResult(Codes.SCHEDULE_ADD_RESULT_OK);
                     AppManager.getInstance().finishActivity();
                 }
@@ -144,6 +157,12 @@ public class ScheduleAddActivity extends BaseActivity {
             scheduleRealm.setCreateTime(new Date(System.currentTimeMillis()));
             scheduleRealm.setNeedUpdate(true);
             realm.commitTransaction();
+            //修改闹钟
+            if (scheduleRealm.isOpen()) {
+                AlarmUtil.closeAlarm(this, scheduleRealm.getRequestCode());
+                AlarmUtil.openAlarm(this, scheduleRealm);
+            }
+
             String objectId = scheduleRealm.getObjectId();
             //如果服务器有记录，则更新到服务器，否则等检查更新时保存到服务器
             if (objectId != null && objectId.length()>0){
